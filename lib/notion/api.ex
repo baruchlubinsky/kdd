@@ -5,7 +5,7 @@ defmodule Notion.API do
     conn
   end
 
-  defp headers(token) do
+  defp headers(token) when not is_nil(token) do
     [
       {"Authorization", "Bearer #{token}"},
       {"Content-Type", "application/json"},

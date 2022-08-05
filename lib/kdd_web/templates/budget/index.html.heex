@@ -1,3 +1,11 @@
+<div id="month-to-date" style="width:100%;height:500px;"></div>
+<script>
+    var div = document.getElementById("month-to-date");
+
+    <%= raw @plot_data %>;
+
+    Plotly.newPlot(div, data, layout);
+</script>
 <p>
     <a href={ Routes.budget_path(@conn, :expense) }>Add a new expense</a>
 </p>

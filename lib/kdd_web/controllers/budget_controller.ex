@@ -7,10 +7,14 @@ defmodule KddWeb.BudgetController do
   def index(conn, _params) do
     user = conn.assigns[:notion_user]
     app = user.budget_app
+
     if is_nil(app) do
       redirect(conn, to: Routes.budget_path(conn, :settings))
     else
-      render(conn, "index.html")
+      summary = month_to_date(app.expenses, app.categories, user.access_token)
+      chart = Plotly.Charts.stacked_bar(summary, "Budget", "Total")
+
+      render(conn, "index.html", plot_data: chart)
     end
   end
 
@@ -73,6 +77,55 @@ defmodule KddWeb.BudgetController do
 
       redirect(conn, to: Routes.budget_path(conn, :expense))
     end
+
+  end
+
+  def month_to_date(expenses, categories, token) do
+    cat_filter =
+      %{"filter" =>
+        %{
+          "property" => "Amount",
+          "number" => %{
+            "less_than" => 0
+          }
+        }
+      }
+
+    exp_filter =
+      %{"filter" =>
+        %{
+          "timestamp" => "created_time",
+          "created_time" => %{
+            "past_month" => %{}
+          }
+        }
+      }
+
+    expense_data =
+      Notion.API.fetch_table(expenses, exp_filter, token)
+      |> Notion.Data.pivot_table("Amount", "Category")
+      |> Enum.map(fn {k, v} -> {k, Enum.sum(v)} end)
+
+    category_resp = Notion.API.fetch_table(categories, cat_filter, token)
+
+    category_data = Notion.Data.pivot_table(category_resp, "Amount", "Category")
+
+    category_ids = Notion.Data.table_to_options(category_resp, "Category")
+
+    Enum.map(category_ids, fn {cat, id} ->
+      {_, total} =
+        Enum.find(expense_data, {nil, 0}, fn
+          {^id, _sum} -> true
+          _ -> false
+        end)
+      {_, [budget]} =
+        Enum.find(category_data, fn
+          {^cat, _amount} -> true
+          _ -> false
+        end)
+      {cat, -budget, total}
+    end)
+
 
   end
 

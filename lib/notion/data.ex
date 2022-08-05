@@ -4,4 +4,19 @@ defmodule Notion.Data do
     Enum.map(data, fn %{"id" => id, "properties" => %{^column => %{"title" => [%{"plain_text" => c}]}}} -> {c, id} end)
   end
 
+  def pivot_table(data, values_prop, categories_prop) do
+    Enum.map(data, fn row ->
+      value = row["properties"][values_prop] |> parse_property()
+      category = row["properties"][categories_prop] |> parse_property()
+      {category, value}
+    end)
+    |> Enum.group_by(&elem(&1, 0), &elem(&1, 1))
+  end
+
+  def parse_property(%{"number" => value, "type" => "number"}), do: value
+  def parse_property(%{"relation" => [%{"id" => value}], "type" => "relation"}), do: value
+  def parse_property(%{"title" => [%{"plain_text" => value}], "type" => "title"}), do: value
+  def parse_property(%{"date" => %{"start" => value}, "type" => "date"}), do: value
+
+
 end
