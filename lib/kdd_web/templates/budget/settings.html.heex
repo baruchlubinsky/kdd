@@ -1,0 +1,17 @@
+<h1>Budget</h1>
+<p>
+    <a href={ @template_url }>Copy this Notion template to create your DB</a>
+</p>
+<p>
+    Enter links to those DB's
+</p>
+<%= form_for @budget_app, Routes.budget_path(@conn, :configure), fn f -> %>
+<label>
+    Categories: <%= text_input f, :categories %>
+</label>
+<label>
+    Expenses: <%= text_input f, :expenses %>
+</label>
+
+<%= submit "Save" %>
+<% end %>

@@ -1,0 +1,12 @@
+<h1>Budget</h1>
+<h2>Add expense</h2>
+<%= form_for @conn, Routes.budget_path(@conn, :create), fn form -> %>
+  <label>Name</label>
+  <%= text_input form, :name %>
+  <label>Amount</label>
+  <%= number_input form, :amount %>
+  <label>Category</label>
+  <%= select form, :category, @categories %>
+  <p />
+  <%= submit "Submit" %>
+<% end %>
