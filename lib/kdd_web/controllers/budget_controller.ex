@@ -12,7 +12,7 @@ defmodule KddWeb.BudgetController do
       redirect(conn, to: Routes.budget_path(conn, :settings))
     else
       summary = month_to_date(app.expenses, app.categories, user.access_token)
-      chart = Plotly.Charts.stacked_bar(summary, "Budget", "Total")
+      chart = Plotly.Charts.stacked_bar(summary, "Budget", "Spend")
 
       render(conn, "index.html", plot_data: chart)
     end
@@ -26,8 +26,7 @@ defmodule KddWeb.BudgetController do
     render(conn, "settings.html", template_url: template_url, budget_app: app)
   end
 
-  def configure(conn, %{"budget_app" => args} = params) do
-    IO.inspect(params)
+  def configure(conn, %{"budget_app" => args}) do
     user = conn.assigns[:notion_user]
     app = user.budget_app
     if is_nil(app) do
