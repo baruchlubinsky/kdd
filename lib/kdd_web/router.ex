@@ -27,8 +27,22 @@ defmodule KddWeb.Router do
     get "/budget", BudgetController, :index
     get "/budget/settings", BudgetController, :settings
     post "/budget/configure", BudgetController, :configure
+    put "/budget/configure", BudgetController, :configure
+
     get "/budget/expense", BudgetController, :expense
     post "/budget/expense/create", BudgetController, :create
+  end
+
+  scope "/kanban", KddWeb do
+    pipe_through :browser
+
+    get "/", KanbanController, :index
+    get "/settings", KanbanController, :settings
+    post "/configure", KanbanController, :configure
+    put "/configure", KanbanController, :configure
+
+    get "/epic", KanbanController, :epic
+    post "/epic/complete", KanbanController, :complete_epic
   end
 
 

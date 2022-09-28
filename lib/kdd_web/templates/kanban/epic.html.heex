@@ -1,0 +1,15 @@
+<h1>Kanban</h1>
+<h2>Transfer tickets</h2>
+<%= form_for @conn, Routes.kanban_path(@conn, :complete_epic), fn form -> %>
+    <label>From page ID</label>
+    <%= text_input form, :source %>
+    <label>Property</label>
+    <%= text_input form, :source_prop, value: "Tasks" %>
+    <p />
+    <label>To page ID</label>
+    <%= text_input form, :destination %>
+    <label>Property</label>
+    <%= text_input form, :destination_prop, value: "Tasks" %>
+    <p />
+    <%= submit "Submit" %>
+<% end %>

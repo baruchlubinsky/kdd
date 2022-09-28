@@ -8,7 +8,7 @@ defmodule Kdd.BudgetApp do
     timestamps()
   end
 
-  def changeset(object, params) do
+  def changeset(object, params \\ %{}) do
     Ecto.Changeset.cast(object, params, [:expenses, :categories])
   end
 end

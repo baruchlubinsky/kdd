@@ -15,8 +15,9 @@ defmodule Notion.Data do
 
   def parse_property(%{"number" => value, "type" => "number"}), do: value
   def parse_property(%{"relation" => [%{"id" => value}], "type" => "relation"}), do: value
+  def parse_property(%{"relation" => value, "type" => "relation"}), do: value
   def parse_property(%{"title" => [%{"plain_text" => value}], "type" => "title"}), do: value
   def parse_property(%{"date" => %{"start" => value}, "type" => "date"}), do: value
-
+  def parse_property(other), do: other
 
 end

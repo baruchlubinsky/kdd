@@ -21,7 +21,7 @@ defmodule KddWeb.BudgetController do
   def settings(conn, _parmas) do
     template_url = "https://www.notion.so/Finance-Template-150c0d4d2b484c3facb558fb2b8c5e58"
     user = conn.assigns[:notion_user]
-    app = user.budget_app
+    app = Kdd.BudgetApp.changeset(user.budget_app)
 
     render(conn, "settings.html", template_url: template_url, budget_app: app)
   end
@@ -29,21 +29,20 @@ defmodule KddWeb.BudgetController do
   def configure(conn, %{"budget_app" => args}) do
     user = conn.assigns[:notion_user]
     app = user.budget_app
+
     if is_nil(app) do
-      if is_nil(app) do
-        Kdd.BudgetApp.changeset(%Kdd.BudgetApp{user_id: user.id}, args)
-        |> Kdd.Repo.insert()
-      else
-        Kdd.BudgetApp.changeset(app, args)
-        |> Kdd.Repo.update()
-      end
-      |> case do
-        {:ok, _app} -> redirect(conn, to: Routes.budget_path(conn, :expense))
-        {:error, error} ->
-          IO.inspect(error)
-          redirect(conn, to: Routes.budget_path(conn, :settings))
-        end
+      Kdd.BudgetApp.changeset(%Kdd.BudgetApp{user_id: user.id}, args)
+      |> Kdd.Repo.insert()
+    else
+      Kdd.BudgetApp.changeset(app, args)
+      |> Kdd.Repo.update()
     end
+    |> case do
+      {:ok, _app} -> redirect(conn, to: Routes.budget_path(conn, :expense))
+      {:error, error} ->
+        IO.inspect(error)
+        redirect(conn, to: Routes.budget_path(conn, :settings))
+      end
   end
 
   def expense(conn, _params) do

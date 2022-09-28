@@ -8,6 +8,7 @@ defmodule Kdd.NotionUser do
     field :workspace_name, :string
 
     has_one :budget_app, Kdd.BudgetApp, foreign_key: :user_id
+    has_one :kanban_app, Kdd.KanbanApp, foreign_key: :user_id
 
     timestamps()
   end
