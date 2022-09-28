@@ -23,7 +23,7 @@ defmodule KddWeb.KanbanController do
     args = Map.put(args, "ongoing_prop_id", source_db["properties"][args["ongoing_prop"]]["id"])
 
     target_db = Notion.API.get_database(args["completed_epics"], user.access_token)
-    args = Map.put(args, "completed_prop_id", source_db["properties"][args["completed_prop"]]["id"])
+    args = Map.put(args, "completed_prop_id", target_db["properties"][args["completed_prop"]]["id"])
 
     if is_nil(app) do
       Kdd.KanbanApp.changeset(%Kdd.KanbanApp{user_id: user.id}, args)
