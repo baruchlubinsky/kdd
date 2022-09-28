@@ -13,6 +13,17 @@ defmodule Notion.Data do
     |> Enum.group_by(&elem(&1, 0), &elem(&1, 1))
   end
 
+  def transfer_relation(src_page, src_prop, dest_page, dest_prop, access_token) do
+    relation = Notion.API.get_page_property(src_page, src_prop, access_token)
+    values = Enum.map(relation, &Map.get(&1, "relation"))
+    properties = %{
+      "properties" => %{
+        dest_prop => values
+      }
+    }
+    Notion.API.update_page(dest_page, properties, access_token)
+  end
+
   def parse_property(%{"number" => value, "type" => "number"}), do: value
   def parse_property(%{"relation" => [%{"id" => value}], "type" => "relation"}), do: value
   def parse_property(%{"relation" => value, "type" => "relation"}), do: value

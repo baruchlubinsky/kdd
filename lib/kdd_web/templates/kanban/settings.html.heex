@@ -1,0 +1,20 @@
+<h1>Kanban</h1>
+<p>
+    Enter the ID's of your Epics databases, and the names of the relations to transfer.
+</p>
+<%= form_for @kanban_app, Routes.kanban_path(@conn, :configure), fn f -> %>
+<label>
+    Source DB: <%= text_input f, :ongoing_epics %>
+</label>
+<label>
+    Source Column: <%= text_input f, :ongoing_prop %>
+</label>
+<label>
+    Target DB: <%= text_input f, :completed_epics %>
+</label>
+<label>
+    Target Column: <%= text_input f, :completed_prop %>
+</label>
+
+<%= submit "Save" %>
+<% end %>
