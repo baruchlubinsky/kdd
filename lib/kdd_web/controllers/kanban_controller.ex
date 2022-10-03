@@ -10,14 +10,14 @@ defmodule KddWeb.KanbanController do
 
   def settings(conn, _parmas) do
     user = conn.assigns[:notion_user]
-    app = Kdd.KanbanApp.changeset(user.kanban_app)
+    app = Kdd.KanbanApp.changeset(user.kanban_app || %Kdd.KanbanApp{})
 
     render(conn, "settings.html", kanban_app: app)
   end
 
-  def configure(conn, %{"notion_app" => args}) do
+  def configure(conn, %{"kanban_app" => args}) do
     user = conn.assigns[:notion_user]
-    app = user.notion_app
+    app = user.kanban_app
 
     source_db = Notion.API.get_database(args["ongoing_epics"], user.access_token)
     args = Map.put(args, "ongoing_prop_id", source_db["properties"][args["ongoing_prop"]]["id"])

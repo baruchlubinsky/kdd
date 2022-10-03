@@ -1,6 +1,9 @@
 <h1>Kanban</h1>
 <p>
-    Enter the ID's of your Epics databases, and the names of the relations to transfer.
+    Enter the ID's of your Epics databases, and the names of the relations to Tasks.
+</p>
+<p>
+    The related pages are transfered from the the Source DB to the Target DB. 
 </p>
 <%= form_for @kanban_app, Routes.kanban_path(@conn, :configure), fn f -> %>
 <label>

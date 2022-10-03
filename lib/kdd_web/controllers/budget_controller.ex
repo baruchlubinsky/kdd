@@ -21,7 +21,7 @@ defmodule KddWeb.BudgetController do
   def settings(conn, _parmas) do
     template_url = "https://www.notion.so/Finance-Template-150c0d4d2b484c3facb558fb2b8c5e58"
     user = conn.assigns[:notion_user]
-    app = Kdd.BudgetApp.changeset(user.budget_app)
+    app = Kdd.BudgetApp.changeset(user.budget_app || %Kdd.BudgetApp{})
 
     render(conn, "settings.html", template_url: template_url, budget_app: app)
   end
