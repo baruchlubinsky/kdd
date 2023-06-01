@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <%= live_title_tag assigns[:page_title] || "KDD" %>
+    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"}/>
+    <link rel="manifest" href="site.webmanifest">
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}></script>
+    <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
+  </head>
+  <body>
+    <header>
+
+      <nav class="flex items-center justify-between flex-wrap bg-black text-white p-6">
+        <div class="flex items-center flex-shrink-0 mr-6">
+          <a href="/" class="flex items-center py-4 px-2">
+            <img src={~p"/images/kdd-logo-inverse.png"} alt="KDD Logo" alt="Logo" class="h-8 w-8 mr-2" />
+          </a>
+        </div>
+        <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+          <div class="text-sm lg:flex-grow">
+            <a href="/notion" class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4">
+              Notion
+            </a>
+            <a href="/about" class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4">
+              About
+            </a>
+          </div>
+          <div>
+            <a href="#" class="block mt-4 lg:inline-block lg:mt-0 hover:underline mr-4">
+              User
+            </a>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <%= @inner_content %>
+  </body>
+</html>
