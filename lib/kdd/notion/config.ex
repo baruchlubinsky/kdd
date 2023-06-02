@@ -1,4 +1,4 @@
-defmodule Notion.Config do
+defmodule Kdd.Notion.Config do
 
   def get_setting(name) do
     Application.get_env(:kdd, :notion) |> Keyword.get(name)

@@ -1,11 +1,10 @@
 defmodule Kdd.Kdd.User do
-  use Ecto.Schema
-  import Ecto.Changeset
+  use Kdd.Model
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
   schema "users" do
+    has_one :session, Kdd.Kdd.Session
 
+    has_one :notion_account, Kdd.Notion.Account
 
     timestamps()
   end

@@ -1,18 +1,50 @@
 defmodule KddWeb.Auth.NotionController do
   use KddWeb, :controller
+  import Ecto.Query
 
+  @doc """
+  This is the route set as the Notion Integration redirect URI
+
+  https://developers.notion.com/docs/authorization#step-2-notion-redirects-the-user-to-the-integrations-redirect-uri-and-includes-a-code-parameter
+  """
   def authenticate(conn, %{"code" => code}) do
-    redirect = ~p"/auth/notion/authenticate"
+    redirect = url(~p"/auth/notion/authenticate")
 
-    exchange_token(code, redirect)
-    |> IO.inspect()
+    case exchange_token(code, redirect) do
+      {:ok, %{"workspace_id" => workspace_id} = data} ->
+        account = Kdd.Repo.one(from(Kdd.Notion.Account, where: [workspace_id: ^workspace_id], preload: :user))
 
-    resp(conn, 201, "")
+        user =
+          if is_nil(account) do
+            user = Kdd.Repo.insert!(%Kdd.Kdd.User{})
+            %Kdd.Notion.Account{user_id: user.id}
+              |> Kdd.Notion.Account.changeset(data)
+              |> Kdd.Repo.insert!()
+            user
+          else
+            Kdd.Notion.Account.changeset(account, data)
+              |> Kdd.Repo.update!()
+            account.user
+          end
 
+        session = Kdd.Repo.one(from(Kdd.Kdd.Session, where: [user_id: ^user.id])) || %Kdd.Kdd.Session{user_id: user.id}
+
+        token = :crypto.strong_rand_bytes(8) |> Base.encode64(padding: false)
+
+        Kdd.Kdd.Session.set_token(session, token)
+        |> Kdd.Repo.insert_or_update!()
+
+        put_resp_cookie(conn, "kdd_session", token, sign: true, max_age: 30*24*60*60) # Remember me for 30 days
+        |> redirect(to: ~p"/notion")
+
+      {:error, data} ->
+        put_flash(conn, :error, data)
+        |> redirect(to: ~p"/notion")
+    end
   end
 
   def exchange_token(code, redirect) do
-    basic_auth = Notion.Config.client_id() <> ":" <> Notion.Config.client_secret()
+    basic_auth = Kdd.Notion.Config.client_id() <> ":" <> Kdd.Notion.Config.client_secret()
     body = oauth_token_params(code, redirect)
 
     headers = [
@@ -21,7 +53,11 @@ defmodule KddWeb.Auth.NotionController do
     ]
 
     Finch.build(:post, "https://api.notion.com/v1/oauth/token", headers, Jason.encode!(body))
-    |> Finch.request(:notion_http)
+    |> Finch.request!(:notion_http)
+    |> case do
+      %Finch.Response{status: 200, body: body} -> {:ok, Jason.decode!(body)}
+      %Finch.Response{body: body} -> {:error, Jason.decode!(body)}
+    end
 
   end
 

@@ -23,10 +23,10 @@ defmodule KddWeb.Router do
 
   end
 
-  scope "/auth", KddWeb do
-    pipe_through :api
+  scope "/auth", KddWeb.Auth do
+    pipe_through :browser
 
-    get "/notion/authenticate", Auth.NotionController, :authenticate
+    get "/notion/authenticate", NotionController, :authenticate
   end
 
   # Other scopes may use custom stacks.
