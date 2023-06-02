@@ -16,6 +16,7 @@ defmodule Kdd.Application do
       {Phoenix.PubSub, name: Kdd.PubSub},
       # Start Finch
       {Finch, name: Kdd.Finch},
+      {Finch, name: :notion_http},
       # Start the Endpoint (http/https)
       KddWeb.Endpoint
       # Start a worker by calling: Kdd.Worker.start_link(arg)

@@ -10,6 +10,6 @@ defmodule KddWeb.PageController do
   end
 
   def notion(conn, _params) do
-    render(conn, :notion, contact: "mailto:#{Application.get_env(:kdd, :contact_email)}")
+    render(conn, :notion, contact: "mailto:#{Application.get_env(:kdd, :contact_email)}", integration: Notion.Config.auth_url())
   end
 end

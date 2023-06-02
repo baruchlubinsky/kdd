@@ -23,6 +23,12 @@ end
 config :kdd, :contact_email, System.get_env("CONTACT_EMAIL")
 config :kdd, :support_email, System.get_env("SUPPORT_EMAIL")
 
+config :kdd, :notion,
+  auth_url: System.get_env("NOTION_AUTH_URL"),
+  client_id: System.get_env("NOTION_CLIENT_ID"),
+  client_secret: System.get_env("NOTION_CLIENT_SECRET")
+
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||
