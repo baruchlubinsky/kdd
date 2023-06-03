@@ -11,10 +11,9 @@ defmodule KddWeb.PageController do
   end
 
   def notion(conn, _params) do
-    conn = fetch_cookies(conn, signed: ["kdd_session"])
-    session_token = conn.cookies["kdd_session"]
+    session_token = conn.assigns[:kdd_token] |> IO.inspect()
 
-    if is_nil(session_token) do
+    if !session_token do
       render(conn, :notion, contact: "mailto:#{Application.get_env(:kdd, :contact_email)}", integration: Kdd.Notion.Config.auth_url())
     else
       session =

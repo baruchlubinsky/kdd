@@ -1,6 +1,8 @@
 defmodule KddWeb.Router do
   use KddWeb, :router
 
+  import KddWeb.Auth.SessionController
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,7 @@ defmodule KddWeb.Router do
     plug :put_root_layout, {KddWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :get_kdd_session
   end
 
   pipeline :api do
@@ -29,6 +32,15 @@ defmodule KddWeb.Router do
     get "/notion/authenticate", NotionController, :authenticate
   end
 
+  scope "/apps", KddWeb.Apps do
+    pipe_through :browser
+
+    get "/budget", BudgetController, :index
+    get "/budget/settings", BudgetController, :settings
+    post "/budget/configure", BudgetController, :configure
+
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", KddWeb do
   #   pipe_through :api
@@ -48,6 +60,8 @@ defmodule KddWeb.Router do
 
       live_dashboard "/dashboard", metrics: KddWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
+
+      get "/token", KddWeb.Auth.SessionController, :dev_token
     end
   end
 end

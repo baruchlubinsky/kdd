@@ -27,12 +27,7 @@ defmodule KddWeb.Auth.NotionController do
             account.user
           end
 
-        session = Kdd.Repo.one(from(Kdd.Kdd.Session, where: [user_id: ^user.id])) || %Kdd.Kdd.Session{user_id: user.id}
-
-        token = :crypto.strong_rand_bytes(8) |> Base.encode64(padding: false)
-
-        Kdd.Kdd.Session.set_token(session, token)
-        |> Kdd.Repo.insert_or_update!()
+        token = KddWeb.Auth.SessionController.new_token(user)
 
         put_resp_cookie(conn, "kdd_session", token, sign: true, max_age: 30*24*60*60) # Remember me for 30 days
         |> redirect(to: ~p"/notion")

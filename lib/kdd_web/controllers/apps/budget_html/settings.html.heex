@@ -1,0 +1,14 @@
+    <h1 class="text-xl font-semibold">Budget</h1>
+    <%= form_for @changeset, ~p"/apps/budget/configure", fn f -> %>
+    <div class="flex justify-between">
+      <label>Budget Database page ID</label>
+      <%= text_input f, :budget_db, class: "notionLink border rounded", size: 40 %>
+    </div>
+    <div class="flex justify-between">
+      <label>Expenses Database page ID</label>
+      <%= text_input f, :expense_db, class: "notionLink border rounded", size: 40 %>
+    </div>
+    <div>
+      <%= submit "Save" %>
+    </div>
+    <% end %>

@@ -44,6 +44,7 @@ defmodule KddWeb do
 
       import Plug.Conn
       import KddWeb.Gettext
+      import KddWeb.Auth.SessionController, only: [load_user!: 2]
 
       unquote(verified_routes())
     end

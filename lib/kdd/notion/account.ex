@@ -4,6 +4,8 @@ defmodule Kdd.Notion.Account do
   schema "notion_accounts" do
     belongs_to :user, Kdd.Kdd.User
 
+    has_many :budget_apps, Kdd.Apps.Budget, foreign_key: :account_id
+
     field :access_token, :string
     field :bot_id, :string
     field :workspace_name, :string

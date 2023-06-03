@@ -39,3 +39,21 @@ liveSocket.connect()
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
 
+function notionLinkToID (event) {
+    let element = event.target; 
+    let input = event.clipboardData.getData("text/plain");
+    
+    try {
+        let uri = new URL(input);
+        event.preventDefault();
+        element.value = uri.pathname.substring(uri.pathname.length - 32);
+    } catch {
+
+    }
+}
+
+window.onload = function() {
+    document.querySelectorAll(".notionLink").forEach(element => {
+        element.addEventListener("paste", notionLinkToID);
+    });
+}
