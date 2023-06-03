@@ -6,7 +6,7 @@ defmodule Kdd.Notion.Page do
     |> Finch.request!(:notion_http)
   end
 
-  def create_record(database_id, properties, token) do
+  def create_record(properties, database_id, token) do
     payload = %{
       parent: %{database_id: database_id},
       properties: properties

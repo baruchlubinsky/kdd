@@ -39,6 +39,8 @@ defmodule KddWeb.Router do
     get "/budget/settings", BudgetController, :settings
     post "/budget/configure", BudgetController, :configure
     put "/budget/configure", BudgetController, :configure
+    get "/budget/expense", BudgetController, :expense
+    post "/budget/expense", BudgetController, :record_expense
 
   end
 
