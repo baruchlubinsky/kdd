@@ -1,4 +1,4 @@
-defmodule Kdd.Notion.Process do
+defmodule Kdd.Notion.Transform do
 
   def table_to_options(data, column) do
     Enum.map(data, fn %{"id" => id, "properties" => %{^column => %{"title" => [%{"plain_text" => c}]}}} -> {c, id} end)

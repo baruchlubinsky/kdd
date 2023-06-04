@@ -37,7 +37,7 @@ defmodule KddWeb.Auth.SessionController do
   def new_token(user) do
     session = Kdd.Repo.one(from(Kdd.Kdd.Session, where: [user_id: ^user.id])) || %Kdd.Kdd.Session{user_id: user.id}
 
-    token = :crypto.strong_rand_bytes(8) |> Base.encode64(padding: false) |> IO.inspect()
+    token = :crypto.strong_rand_bytes(8) |> Base.encode64(padding: false)
 
     Kdd.Kdd.Session.set_token(session, token)
     |> Kdd.Repo.insert_or_update!()

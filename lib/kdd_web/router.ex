@@ -14,7 +14,9 @@ defmodule KddWeb.Router do
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
+    plug :accepts, ["json", "html"]
+    plug :fetch_session
+    plug :get_kdd_session
   end
 
   scope "/", KddWeb do
@@ -42,6 +44,18 @@ defmodule KddWeb.Router do
     get "/budget/expense", BudgetController, :expense
     post "/budget/expense", BudgetController, :record_expense
 
+  end
+
+  scope "/", KddWeb do
+    pipe_through :api
+
+    get "/apps/budget/plot", Apps.BudgetController, :plot
+  end
+
+  scope "/api", KddWeb do
+    pipe_through :api
+
+    get "/apps/budget/month_to_date", Apps.BudgetController, :month_to_date
   end
 
   # Other scopes may use custom stacks.

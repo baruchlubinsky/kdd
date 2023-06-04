@@ -16,3 +16,9 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
   * Docs: https://hexdocs.pm/phoenix
   * Forum: https://elixirforum.com/c/phoenix-forum
   * Source: https://github.com/phoenixframework/phoenix
+
+# Testing the Notion API locally
+
+Create a private integration and save the secret in your local database in `notion_accounts.access_token`. You may use this as the `token` argument in the Notion library. 
+
+Add a session to your browser by also creating a `user` record, and then visiting `/dev/token`.

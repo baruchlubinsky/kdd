@@ -25,7 +25,6 @@ defmodule KddWeb.Apps.BudgetController do
     record
     |> Kdd.Apps.Budget.changeset(params["budget"])
     |> Kdd.Repo.insert_or_update!()
-    |> IO.inspect()
 
     put_flash(conn, :info, "Saved.")
     |> redirect(to: ~p{/apps/budget})
@@ -41,7 +40,7 @@ defmodule KddWeb.Apps.BudgetController do
     else
       category_options =
       Kdd.Notion.Database.query(app.budget_db, nil, user.notion_account.access_token)
-      |> Kdd.Notion.Process.table_to_options("Category")
+      |> Kdd.Notion.Transform.table_to_options("Category")
 
       render(conn, :expense, categories: category_options)
     end
@@ -64,4 +63,73 @@ defmodule KddWeb.Apps.BudgetController do
       redirect(conn, to: ~p"/apps/budget/expense")
     end
   end
+
+  def plot(conn, _params) do
+    put_layout(conn, false)
+    |> put_root_layout(false)
+    |> render(:plot)
+  end
+
+  def month_to_date(conn, _params) do
+    user = conn.assigns[:user]
+    app = Kdd.Repo.one(from(Kdd.Apps.Budget, where: [account_id: ^user.notion_account.id]))
+
+    if is_nil(app) do
+      raise "App is not configured."
+    else
+      data = monthly_data(app.expense_db, app.budget_db, user.notion_account.access_token)
+      json(conn, data)
+    end
+  end
+
+  def monthly_data(expenses, categories, token) do
+    cat_filter =
+      %{"filter" =>
+        %{
+          "property" => "Amount",
+          "number" => %{
+            "less_than" => 0
+          }
+        }
+      }
+
+    exp_filter =
+      %{"filter" =>
+        %{
+          "timestamp" => "created_time",
+          "created_time" => %{
+            "past_month" => %{}
+          }
+        }
+      }
+
+    expense_data =
+      Kdd.Notion.Database.query(expenses, exp_filter, token)
+      |> Kdd.Notion.Transform.pivot_table("Amount", "Category")
+      |> Enum.filter(fn {k, _v} -> is_binary(k) end)
+      |> Enum.map(fn {k, v} -> {k, Enum.sum(v)} end)
+
+    category_resp = Kdd.Notion.Database.query(categories, cat_filter, token)
+
+    category_data = Kdd.Notion.Transform.pivot_table(category_resp, "Amount", "Category")
+
+    category_ids = Kdd.Notion.Transform.table_to_options(category_resp, "Category")
+
+    Enum.map(category_ids, fn {cat, id} ->
+      {_, total} =
+        Enum.find(expense_data, {nil, 0}, fn
+          {^id, _sum} -> true
+          _ -> false
+        end)
+      {_, [budget]} =
+        Enum.find(category_data, fn
+          {^cat, _amount} -> true
+          _ -> false
+        end)
+      %{"category" => cat, "budget" => -budget, "spend" => total}
+    end)
+
+
+  end
+
 end
