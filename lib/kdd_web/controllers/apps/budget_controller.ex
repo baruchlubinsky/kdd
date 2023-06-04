@@ -46,7 +46,7 @@ defmodule KddWeb.Apps.BudgetController do
     end
   end
 
-  def record_expense(conn, %{"expense" => %{"name" => name, "amount" => amount, "category" => category}}) do
+  def record_expense(conn, %{"name" => name, "amount" => amount, "category" => category}) do
     user = conn.assigns[:user]
     app = Kdd.Repo.one(from(Kdd.Apps.Budget, where: [account_id: ^user.notion_account.id]))
 
