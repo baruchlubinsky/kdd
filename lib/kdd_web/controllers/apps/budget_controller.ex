@@ -126,8 +126,12 @@ defmodule KddWeb.Apps.BudgetController do
           {^cat, _amount} -> true
           _ -> false
         end)
-      %{"category" => cat, "budget" => -budget, "spend" => total}
+      [
+        %{"category" => cat, "type" => "budget", "value" => -budget},
+        %{"category" => cat, "type" => "spend", "value" => total}
+      ]
     end)
+    |> List.flatten()
 
 
   end

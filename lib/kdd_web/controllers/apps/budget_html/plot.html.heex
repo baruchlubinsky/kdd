@@ -7,10 +7,11 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 import {json} from "https://cdn.skypack.dev/d3-fetch@3";
 
 json("/api/apps/budget/month_to_date").then((data) => {
-    const plot = Plot
-        .barY(data, {x: "category", x2: "spend", y: "budget"})
-        .plot();
-
+    const plot = Plot.plot({
+        marks: [
+            Plot.barY(data, Plot.groupX({y: "identity"}, {x: "type", fx: "category", y: "value"}))
+        ]
+    });
     const div = document.querySelector("#myplot");
     div.append(plot);
 });
