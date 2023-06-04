@@ -13,8 +13,8 @@ defmodule KddWeb.Apps.BudgetController do
   def settings(conn, _params) do
     user = conn.assigns[:user]
     record = Kdd.Repo.one(from(Kdd.Apps.Budget, where: [account_id: ^user.notion_account.id])) || %Kdd.Apps.Budget{}
-    changeset = Kdd.Apps.Budget.changeset(record, %{})
-    render(conn, :settings, changeset: changeset)
+    form =  Kdd.Apps.Budget.changeset(record, %{})
+    render(conn, :settings, form: form)
   end
 
   def configure(conn, params) do

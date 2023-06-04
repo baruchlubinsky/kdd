@@ -1,34 +1,8 @@
 <h1 class="text-xl font-semibold">Upload expense</h1>
 
-<%= form_for :expense, ~p"/apps/budget/expense", fn f -> %>
-<div class="flex-col space-y-4 ">
-    <div class="md:flex md:justify-between md:flex-row sm:flex-col">
-        <div class="flex">
-            <label>Title</label>
-        </div>
-        <div class="flex">
-            <%= text_input f, :name, class: "border rounded", size: 36 %>
-        </div>
-    </div>
-    <div class="md:flex md:justify-between md:flex-row sm:flex-col">
-        <div class="flex">
-            <label>Category</label>
-        </div>
-        <div class="flex">
-            <%= select f, :category, @categories, class: "border rounded" %>
-        </div>
-    </div>
-    <div class="md:flex md:justify-between md:flex-row sm:flex-col">
-        <div class="flex">
-            <label>Amount</label>
-        </div>
-        <div class="flex">
-            <%= number_input f, :amount, class: "border rounded" %>
-        </div>
-    </div>
-    <div>
-      <%= submit "Save", class: "font-semibold hover:underline" %>
-    </div>
-</div>
-
-<% end %>
+<.simple_form for={%{}} as={:expense} action={~p"/apps/budget/expense"}>
+    <.input type="text" label="Title" name="name" value="" />
+    <.input type="select" label="Category" name="category" options={@categories} value="" />
+    <.input type="number" label="Amount" name="amount" value="" />
+    <.button>Save</.button>
+</.simple_form>
