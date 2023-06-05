@@ -1,5 +1,14 @@
-<h1 class="text-xl font-semibold">Upload expense</h1>
-
+<div class="flex space-between">
+    <div class="flex-grow w-auto">
+        <h1 class="text-2xl font-semilbold">Upload expense</h1>
+    </div>
+    <div class="mr-4">
+        <a href={~p"/apps/budget"} class="text-lg text-gray-600 hover:underline">Home</a>
+    </div>
+    <div>
+        <a href={~p"/apps/budget/settings"} class="text-lg text-gray-600 hover:underline">Settings</a>
+    </div>
+</div>
 <.simple_form for={%{}} as={:expense} action={~p"/apps/budget/expense"}>
     <.input type="text" label="Title" name="name" value="" />
     <.input type="select" label="Category" name="category" options={@categories} value="" />

@@ -16,22 +16,27 @@ defmodule KddWeb.Auth.SessionController do
       session = Kdd.Repo.one(from(Kdd.Kdd.Session, where: [token: ^token], preload: :user))
       if is_nil(session) do
         put_flash(conn, :error, "Session expired. Must be logged in.")
-        |> redirect(to: ~p{/notion})
+        |> redirect(to: ~p"/notion")
         |> halt()
       else
         user = Kdd.Repo.preload(session.user, :notion_account)
         if is_nil(user.notion_account) do
           put_flash(conn, :info, "Connect your Notion account to continue.")
-          |> redirect(to: ~p{/notion})
+          |> redirect(to: ~p"/notion")
           |> halt()
         end
         assign(conn, :user, user)
       end
     else
       put_flash(conn, :error, "Must be logged in.")
-      |> redirect(to: ~p{/notion})
+      |> redirect(to: ~p"/notion")
       |> halt()
     end
+  end
+
+  def logout(conn, _params) do
+    delete_resp_cookie(conn, "kdd_session")
+    |> redirect(to: ~p"/notion")
   end
 
   def new_token(user) do

@@ -32,6 +32,7 @@ defmodule KddWeb.Router do
     pipe_through :browser
 
     get "/notion/authenticate", NotionController, :authenticate
+    get "/logout", SessionController, :logout
   end
 
   scope "/apps", KddWeb.Apps do

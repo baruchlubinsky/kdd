@@ -70,19 +70,22 @@ defmodule KddWeb.Apps.BudgetController do
     |> render(:plot)
   end
 
-  def month_to_date(conn, _params) do
+  def month_to_date(conn, params) do
     user = conn.assigns[:user]
     app = Kdd.Repo.one(from(Kdd.Apps.Budget, where: [account_id: ^user.notion_account.id]))
 
     if is_nil(app) do
       raise "App is not configured."
     else
-      data = monthly_data(app.expense_db, app.budget_db, user.notion_account.access_token)
+      start_date = params["start_date"] || Date.utc_today() |> Date.beginning_of_month() |> Date.to_iso8601()
+      end_date = params["end_date"] || Date.utc_today() |> Date.end_of_month() |> Date.to_iso8601()
+
+      data = monthly_data(app.expense_db, app.budget_db, start_date, end_date, user.notion_account.access_token)
       json(conn, data)
     end
   end
 
-  def monthly_data(expenses, categories, token) do
+  def monthly_data(expenses, categories, start_date, end_date, token) do
     cat_filter =
       %{"filter" =>
         %{
@@ -96,10 +99,20 @@ defmodule KddWeb.Apps.BudgetController do
     exp_filter =
       %{"filter" =>
         %{
-          "timestamp" => "created_time",
-          "created_time" => %{
-            "past_month" => %{}
-          }
+          "and" => [
+            %{
+              "property" => "Date",
+              "date" => %{
+                "on_or_after" => start_date
+              }
+            },
+            %{
+              "property" => "Date",
+              "date" => %{
+                "on_or_before" => end_date
+              }
+            }
+          ]
         }
       }
 

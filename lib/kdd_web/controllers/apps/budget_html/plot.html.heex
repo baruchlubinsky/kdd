@@ -6,7 +6,7 @@
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
 import {json} from "https://cdn.skypack.dev/d3-fetch@3";
 
-json("/api/apps/budget/month_to_date", {timeout: 1000*60})
+json("/api/apps/budget/month_to_date", {timeout: 0})
 .then((data) => {
     const plot = Plot.plot({
         marks: [
@@ -14,6 +14,12 @@ json("/api/apps/budget/month_to_date", {timeout: 1000*60})
         ]
     });
     const div = document.querySelector("#myplot");
+    var heading = document.createElement("h3");
+    heading.innerHTML = "Monthly spend (work-in-progress)";
+    heading.style.fontFamily = "system-ui";
+    heading.style.fontWeight = "normal";
+
+    div.append(heading);
     div.append(plot);
 });
 
