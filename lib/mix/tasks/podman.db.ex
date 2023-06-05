@@ -16,7 +16,7 @@ defmodule Mix.Tasks.Podman.Db do
     password = Keyword.get(settings, :password)
 
     run_db = "podman run --rm -d \
-    --name kdd-db \
+    --name kdd-db --replace \
     -e POSTGRES_DB=#{db} \
     -e POSTGRES_USER=#{username} \
     -e POSTGRES_PASSWORD=#{password} \
