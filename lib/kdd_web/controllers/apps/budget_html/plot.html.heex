@@ -9,8 +9,12 @@ import {json} from "https://cdn.skypack.dev/d3-fetch@3";
 json("/api/apps/budget/month_to_date", {timeout: 0})
 .then((data) => {
     const plot = Plot.plot({
+        color: {"legend": true},
+        x: {"axis": null},
         marks: [
-            Plot.barY(data, Plot.groupX({y: "identity"}, {x: "type", fx: "category", y: "value"}))
+            Plot.barY(data, Plot.groupX({y: "identity"}, {x: "type", fx: "category", y: "value", fill: "type"})),
+            Plot.axisFx({anchor: "bottom", tickRotate: 0, label: null, textAnchor: "centre"}),
+            Plot.ruleY([0])
         ]
     });
     const div = document.querySelector("#myplot");
