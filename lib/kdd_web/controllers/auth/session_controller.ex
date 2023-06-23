@@ -16,7 +16,7 @@ defmodule KddWeb.Auth.SessionController do
       session = Kdd.Repo.one(from(Kdd.Kdd.Session, where: [token: ^token], preload: :user))
       if is_nil(session) do
         put_flash(conn, :error, "Session expired. Must be logged in.")
-        |> redirect(to: ~p"/notion")
+        |> logout(%{})
         |> halt()
       else
         user = Kdd.Repo.preload(session.user, :notion_account)
