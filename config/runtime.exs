@@ -7,6 +7,15 @@ import Config
 # any compile-time configuration in here, as it won't be applied.
 # The block below contains prod specific runtime configuration.
 
+if File.exists?(".env") do
+  File.read!(".env")
+  |> String.split("=")
+  |> Enum.each(fn [name, "=", value] ->
+    System.put_env(String.trim(name), String.trim(value))
+    _ -> :ok
+  end)
+end
+
 # ## Using releases
 #
 # If you use `mix release`, you need to explicitly enable the server

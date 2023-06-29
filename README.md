@@ -21,4 +21,4 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 
 Create a private integration and save the secret in your local database in `notion_accounts.access_token`. You may use this as the `token` argument in the Notion library. 
 
-Add a session to your browser by also creating a `user` record, and then visiting `/dev/token`.
+Add a session to your browser by first creating a `user` record manually, and then visiting `/dev/token`.

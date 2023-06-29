@@ -9,9 +9,4 @@
         <a href={~p"/apps/budget/settings"} class="text-lg text-gray-600 hover:underline">Settings</a>
     </div>
 </div>
-<.simple_form for={%{}} as={:expense} action={~p"/apps/budget/expense"}>
-    <.input type="text" label="Title" name="name" value="" />
-    <.input type="select" label="Category" name="category" options={@categories} value="" />
-    <.input type="number" label="Amount" name="amount" value="" />
-    <.button>Save</.button>
-</.simple_form>
+<%= live_render(@conn, KddWeb.LiveExpense) %>
