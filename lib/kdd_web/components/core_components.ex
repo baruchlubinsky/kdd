@@ -13,6 +13,29 @@ defmodule KddWeb.CoreComponents do
   alias Phoenix.LiveView.JS
   import KddWeb.Gettext
 
+
+
+  slot :inner_block
+  def loading_spinner(assigns) do
+    ~H"""
+    <div class="while-submitting">
+      <svg id="spinner" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+        <circle cx="24" cy="4" r="4" fill="#1ff0f0"/>
+        <circle cx="12.19" cy="7.86" r="3.7" fill="#1ffbf2"/>
+        <circle cx="5.02" cy="17.68" r="3.4" fill="#1ef7e4"/>
+        <circle cx="5.02" cy="30.32" r="3.1" fill="#1ef3d7"/>
+        <circle cx="12.19" cy="40.14" r="2.8" fill="#1eefc9"/>
+        <circle cx="24" cy="44" r="2.5" fill="#1eebbc"/>
+        <circle cx="35.81" cy="40.14" r="2.2" fill="#1de7af"/>
+        <circle cx="42.98" cy="30.32" r="1.9" fill="#1de3a1"/>
+        <circle cx="42.98" cy="17.68" r="1.6" fill="#1ddf94"/>
+        <circle cx="35.81" cy="7.86" r="1.3" fill="#1cdb86"/>
+      </svg>
+      <%= render_slot(@inner_block) %>
+    </div>
+    """
+  end
+
   @doc """
   Renders a modal.
 
@@ -221,16 +244,20 @@ defmodule KddWeb.CoreComponents do
     doc: "the arbitrary HTML attributes to apply to the form tag"
 
   slot :inner_block, required: true
+  slot :loading, required: false
   slot :actions, doc: "the slot for form actions, such as a submit button"
 
   def simple_form(assigns) do
     ~H"""
     <.form :let={f} for={@for} as={@as} {@rest}>
-      <div class="space-y-8 bg-white mt-10">
+      <div class="space-y-8 bg-white mt-10 inputs">
         <%= render_slot(@inner_block, f) %>
         <div :for={action <- @actions} class="mt-2 flex items-center justify-between gap-6">
           <%= render_slot(action, f) %>
         </div>
+      </div>
+      <div class="while-submitting">
+        <%= render_slot(@loading) %>
       </div>
     </.form>
     """

@@ -14,16 +14,39 @@ defmodule KddWeb.LiveExpense do
   def render(assigns) do
     ~H"""
     <.simple_form for={%{}} as={:expense} phx-submit="save">
-    <.input type="text" label="Title" name="name" value="" />
-    <.input type="select" label="Category" name="category" options={@categories || []} value="" disabled={!@categories}/>
-    <.input type="number" label="Amount" name="amount" value="" />
-    <.button>Save</.button>
+      <:loading>
+        <div class="while-submitting">
+          <.loading_spinner>
+          Saving
+          </.loading_spinner>
+        </div>
+      </:loading>
+      <.input type="text" label="Title" name="name" value="" />
+      <.input type="select" label="Category" name="category" options={@categories || []} value="" disabled={!@categories}/>
+      <.input type="number" label="Amount" name="amount" value="" />
+      <.button >Save</.button>
     </.simple_form>
     """
   end
 
-  def handle_event("save", _params, socket) do
-    {:noreply, socket}
+  def handle_event("save",  %{"name" => name, "amount" => amount, "category" => category}, socket) do
+    alias Kdd.Notion.Templates
+
+    account = Kdd.Repo.get!(Kdd.Notion.Account, socket.assigns.notion_id)
+    app = Kdd.Repo.get_by(Kdd.Apps.Budget, account_id: account.id)
+
+    if is_nil(app) do
+      put_flash(socket, :warn, "App is not configured.")
+      |> push_navigate(to: ~p"/apps/budget/settings")
+    else
+      Templates.new_page("Name", name)
+      |> Templates.add_property(Templates.number_prop("Amount", amount))
+      |> Templates.add_property(Templates.relation_prop("Category", app.budget_db, category))
+      |> Templates.add_property(Templates.datestamp("Date"))
+      |> Kdd.Notion.Page.create_record(app.expense_db, account.access_token)
+    end
+
+    {:noreply, put_flash(socket, :info, "Saved #{name}")}
   end
 
   def handle_info({:load_categories, account}, socket) do

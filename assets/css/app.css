@@ -3,3 +3,16 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+.while-submitting { display: none; }
+.inputs { display: block; }
+
+.phx-submit-loading .while-submitting { display: block; }
+.phx-submit-loading .inputs { display: none; }
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% {  transform: rotate(359deg); }
+}
+#spinner {
+    animation: spin 3s linear infinite;
+}
