@@ -18,7 +18,7 @@ defmodule KddWeb.CoreComponents do
   slot :inner_block
   def loading_spinner(assigns) do
     ~H"""
-    <div class="while-submitting">
+    <div>
       <svg id="spinner" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
         <circle cx="24" cy="4" r="4" fill="#1ff0f0"/>
         <circle cx="12.19" cy="7.86" r="3.7" fill="#1ffbf2"/>
