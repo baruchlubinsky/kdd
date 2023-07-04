@@ -38,11 +38,7 @@ defmodule KddWeb.Apps.BudgetController do
       put_flash(conn, :warn, "App is not configured.")
       |> redirect(to: ~p"/apps/budget/settings")
     else
-      category_options =
-      Kdd.Notion.Database.query(app.budget_db, nil, user.notion_account.access_token)
-      |> Kdd.Notion.Transform.table_to_options("Category")
-
-      render(conn, :expense, categories: category_options)
+      render(conn, :expense)
     end
   end
 

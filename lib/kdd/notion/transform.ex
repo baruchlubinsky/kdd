@@ -1,7 +1,11 @@
 defmodule Kdd.Notion.Transform do
 
   def table_to_options(data, column) do
-    Enum.map(data, fn %{"id" => id, "properties" => %{^column => %{"title" => [%{"plain_text" => c}]}}} -> {c, id} end)
+    Enum.flat_map(data, fn
+      %{"id" => id, "properties" => %{^column => %{"title" => [%{"plain_text" => c}]}}} -> [{c, id}]
+      _ -> []
+    end)
+
   end
 
   def pivot_table(data, values_prop, categories_prop) do
@@ -13,16 +17,16 @@ defmodule Kdd.Notion.Transform do
     |> Enum.group_by(&elem(&1, 0), &elem(&1, 1))
   end
 
-  def transfer_relation(src_page, src_prop, dest_page, dest_prop, access_token) do
-    relation = Kdd.Notion.Page.get_property(src_page, src_prop, access_token)
-    values = Enum.map(relation, &Map.get(&1, "relation"))
-    properties = %{
-      "properties" => %{
-        dest_prop => values
-      }
-    }
-    Kdd.Notion.Page.update(dest_page, properties, access_token)
-  end
+  # def transfer_relation(src_page, src_prop, dest_page, dest_prop, access_token) do
+  #   relation = Kdd.Notion.Page.get_property(src_page, src_prop, access_token)
+  #   values = Enum.map(relation, &Map.get(&1, "relation"))
+  #   properties = %{
+  #     "properties" => %{
+  #       dest_prop => values
+  #     }
+  #   }
+  #   Kdd.Notion.Page.update(dest_page, properties, access_token)
+  # end
 
   def parse_property(%{"number" => value, "type" => "number"}), do: value
   def parse_property(%{"relation" => [%{"id" => value}], "type" => "relation"}), do: value
