@@ -66,6 +66,14 @@ defmodule KddWeb.Apps.BudgetController do
     |> render(:plot)
   end
 
+  def report(conn, %{"start_date" => start_date, "end_date" => end_date}) do
+    render(conn, :report, %{start_date: start_date, end_date: end_date})
+  end
+
+  def report(conn, _params) do
+    render(conn, :report, %{start_date: start_of_month(), end_date: end_of_month()})
+  end
+
   def month_to_date(conn, params) do
     user = conn.assigns[:user]
     app = Kdd.Repo.one(from(Kdd.Apps.Budget, where: [account_id: ^user.notion_account.id]))
@@ -73,12 +81,20 @@ defmodule KddWeb.Apps.BudgetController do
     if is_nil(app) do
       raise "App is not configured."
     else
-      start_date = params["start_date"] || Date.utc_today() |> Date.beginning_of_month() |> Date.to_iso8601()
-      end_date = params["end_date"] || Date.utc_today() |> Date.end_of_month() |> Date.to_iso8601()
+      start_date = params["start_date"] || start_of_month()
+      end_date = params["end_date"] || end_of_month()
 
       data = monthly_data(app.expense_db, app.budget_db, start_date, end_date, user.notion_account.access_token)
       json(conn, data)
     end
+  end
+
+  def start_of_month() do
+    Date.utc_today() |> Date.beginning_of_month() |> Date.to_iso8601()
+  end
+
+  def end_of_month() do
+    Date.utc_today() |> Date.end_of_month() |> Date.to_iso8601()
   end
 
   def monthly_data(expenses, categories, start_date, end_date, token) do
