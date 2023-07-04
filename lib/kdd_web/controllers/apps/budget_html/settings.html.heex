@@ -6,9 +6,8 @@
         <a href={~p"/apps/budget"} class="text-lg text-gray-600 hover:underline">Home</a>
     </div>
 </div>
-  <h1 class="text-xl font-semibold">Budget</h1>
-  <.simple_form :let={f} for={@form} action={~p"/apps/budget/configure"}>
-    <.input field={f[:budget_db]} label="Budget Database page ID" input_class="notionLink" />
-    <.input field={f[:expense_db]} label="Expenses Database page ID" input_class="notionLink" />
-    <.button>Save</.button>
-  </.simple_form>
+<.simple_form :let={f} for={@form} action={~p"/apps/budget/configure"}>
+  <.input field={f[:budget_db]} label="Budget Database page ID" input_class="notionLink" />
+  <.input field={f[:expense_db]} label="Expenses Database page ID" input_class="notionLink" />
+  <.button>Save</.button>
+</.simple_form>
