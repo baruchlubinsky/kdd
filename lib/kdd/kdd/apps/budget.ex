@@ -11,8 +11,8 @@ defmodule Kdd.Apps.Budget do
   end
 
   @doc false
-  def changeset(account, attrs) do
-    account
+  def changeset(app, attrs) do
+    app
     |> cast(attrs, [:budget_db, :expense_db])
     |> validate_required([:budget_db, :expense_db])
     |> validate_length(:budget_db, is: 32)

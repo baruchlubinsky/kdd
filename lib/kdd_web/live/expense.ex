@@ -8,7 +8,11 @@ defmodule KddWeb.LiveExpense do
 
     send(self(), {:load_categories, account})
 
-    {:ok, assign(socket, categories: false, expense: %{})}
+    {:ok, assign(socket, categories: false, expense: new_form())}
+  end
+
+  def new_form() do
+    to_form(%{"amount" => "", "name" => "", "category" => nil})
   end
 
   def render(assigns) do
@@ -21,9 +25,9 @@ defmodule KddWeb.LiveExpense do
           </.loading_spinner>
         </div>
       </:loading>
-      <.input type="text" label="Title" name="name" value={@expense["name"]} />
-      <.input type="select" label="Category" name="category" options={@categories || []} value="" disabled={!@categories}/>
-      <.input type="number" label="Amount" name="amount" value={@expense["amount"]} />
+      <.input type="text" label="Title" field={@expense[:name]} />
+      <.input type="select" label="Category" field={@expense[:category]} options={@categories || []} disabled={!@categories}/>
+      <.input type="number" label="Amount" field={@expense[:amount]} />
       <.button >Save</.button>
     </.simple_form>
     """
@@ -46,11 +50,7 @@ defmodule KddWeb.LiveExpense do
       |> Kdd.Notion.Page.create_record(app.expense_db, account.access_token)
     end
 
-    socket =
-      assign(socket, :expense, %{"name" => "", "amount" => ""})
-      |> put_flash(:info, "Saved #{name}")
-
-    {:noreply, socket}
+    {:noreply, assign(socket, :expense, new_form())}
   end
 
   def handle_info({:load_categories, account}, socket) do

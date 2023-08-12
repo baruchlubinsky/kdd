@@ -1,0 +1,5 @@
+<h1><%= @title %></h1>
+
+<%= for record <- @data do %>
+    <.event_row record={record} /> 
+<% end %>

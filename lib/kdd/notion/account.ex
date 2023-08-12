@@ -5,6 +5,7 @@ defmodule Kdd.Notion.Account do
     belongs_to :user, Kdd.Kdd.User
 
     has_many :budget_apps, Kdd.Apps.Budget, foreign_key: :account_id
+    has_many :events_apps, Kdd.Apps.Events, foreign_key: :account_id
 
     field :access_token, :string
     field :bot_id, :string

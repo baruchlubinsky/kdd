@@ -35,16 +35,28 @@ defmodule KddWeb.Router do
     get "/logout", SessionController, :logout
   end
 
-  scope "/apps", KddWeb.Apps do
+  scope "/apps/budget", KddWeb.Apps do
     pipe_through :browser
 
-    get "/budget", BudgetController, :index
-    get "/budget/settings", BudgetController, :settings
-    post "/budget/configure", BudgetController, :configure
-    put "/budget/configure", BudgetController, :configure
-    get "/budget/expense", BudgetController, :expense
-    post "/budget/expense", BudgetController, :record_expense
-    get "/budget/report", BudgetController, :report
+    get "/", BudgetController, :index
+    get "/settings", BudgetController, :settings
+    post "/configure", BudgetController, :configure
+    put "/configure", BudgetController, :configure
+    get "/expense", BudgetController, :expense
+    post "/expense", BudgetController, :record_expense
+    get "/report", BudgetController, :report
+
+  end
+
+  scope "/apps/events", KddWeb.Apps do
+    pipe_through :browser
+
+    get "/", EventsController, :index
+    get "/settings", EventsController, :settings
+    post "/configure", EventsController, :configure
+    put "/configure", EventsController, :configure
+
+    get "/:link", EventsController, :index
 
   end
 
