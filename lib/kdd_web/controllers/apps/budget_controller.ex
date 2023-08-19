@@ -2,7 +2,7 @@ defmodule KddWeb.Apps.BudgetController do
   use KddWeb, :controller
   import Ecto.Query
 
-  alias Kdd.Notion.Templates
+  alias KddNotionEx.Templates
 
   plug :load_user!, except: [:index]
 
@@ -54,7 +54,7 @@ defmodule KddWeb.Apps.BudgetController do
       |> Templates.add_property(Templates.number_prop("Amount", amount))
       |> Templates.add_property(Templates.relation_prop("Category", app.budget_db, category))
       |> Templates.add_property(Templates.datestamp("Date"))
-      |> Kdd.Notion.Page.create_record(app.expense_db, user.notion_account.access_token)
+      |> KddNotionEx.Page.create_record(app.expense_db, user.notion_account.access_token)
 
       redirect(conn, to: ~p"/apps/budget/expense")
     end
@@ -129,16 +129,16 @@ defmodule KddWeb.Apps.BudgetController do
       }
 
     expense_data =
-      Kdd.Notion.Database.query(expenses, exp_filter, token)
-      |> Kdd.Notion.Transform.pivot_table("Amount", "Category")
+      KddNotionEx.Database.query(expenses, exp_filter, token)
+      |> KddNotionEx.Transform.pivot_table("Amount", "Category")
       |> Enum.filter(fn {k, _v} -> is_binary(k) end)
       |> Enum.map(fn {k, v} -> {k, Enum.sum(v)} end)
 
-    category_resp = Kdd.Notion.Database.query(categories, cat_filter, token)
+    category_resp = KddNotionEx.Database.query(categories, cat_filter, token)
 
-    category_data = Kdd.Notion.Transform.pivot_table(category_resp, "Amount", "Category")
+    category_data = KddNotionEx.Transform.pivot_table(category_resp, "Amount", "Category")
 
-    category_ids = Kdd.Notion.Transform.table_to_options(category_resp, "Category")
+    category_ids = KddNotionEx.Transform.table_to_options(category_resp, "Category")
 
     Enum.map(category_ids, fn {cat, id} ->
       {_, total} =

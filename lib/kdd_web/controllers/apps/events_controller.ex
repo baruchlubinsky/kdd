@@ -2,7 +2,7 @@ defmodule KddWeb.Apps.EventsController do
   use KddWeb, :controller
   import Ecto.Query
 
-  # alias Kdd.Notion.Templates
+  # alias KddNotionEx.Templates
 
   plug :load_user!, only: [:settings, :configure]
 
@@ -40,8 +40,8 @@ defmodule KddWeb.Apps.EventsController do
     }
 
     data =
-      Kdd.Notion.Database.query(app.events_db, filter, app.account.access_token)
-      |> Enum.map(&Kdd.Notion.Transform.page_as_record/1)
+      KddNotionEx.Database.query(app.events_db, filter, app.account.access_token)
+      |> Enum.map(&KddNotionEx.Transform.page_as_record/1)
 
     render(conn, :index, title: app.host_name, data: data, base_url: ~p"/apps/events/#{app.link}")
   end
@@ -49,7 +49,7 @@ defmodule KddWeb.Apps.EventsController do
   def register(conn, %{"link" => link, "event_id" => event_id}) do
     app = Kdd.Repo.get_by!(Kdd.Apps.Events, link: link) |> Kdd.Repo.preload(:account)
 
-    Kdd.Notion.Page.get(event_id, app.account.access_token) |> IO.inspect
+    KddNotionEx.Page.get(event_id, app.account.access_token) |> IO.inspect
     render(conn, :register, event_id: event_id)
   end
 

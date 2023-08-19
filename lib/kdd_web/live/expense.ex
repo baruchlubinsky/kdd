@@ -34,7 +34,7 @@ defmodule KddWeb.LiveExpense do
   end
 
   def handle_event("save",  %{"name" => name, "amount" => amount, "category" => category}, socket) do
-    alias Kdd.Notion.Templates
+    alias KddNotionEx.Templates
 
     account = Kdd.Repo.get!(Kdd.Notion.Account, socket.assigns.notion_id)
     app = Kdd.Repo.get_by(Kdd.Apps.Budget, account_id: account.id)
@@ -47,7 +47,7 @@ defmodule KddWeb.LiveExpense do
       |> Templates.add_property(Templates.number_prop("Amount", amount))
       |> Templates.add_property(Templates.relation_prop("Category", app.budget_db, category))
       |> Templates.add_property(Templates.datestamp("Date"))
-      |> Kdd.Notion.Page.create_record(app.expense_db, account.access_token)
+      |> KddNotionEx.Page.create_record(app.expense_db, account.access_token)
     end
 
     {:noreply, assign(socket, :expense, new_form())}
@@ -58,8 +58,8 @@ defmodule KddWeb.LiveExpense do
     app = Kdd.Repo.one!(from(Kdd.Apps.Budget, where: [account_id: ^account.id]))
 
     category_options =
-      Kdd.Notion.Database.query(app.budget_db, nil, account.access_token)
-      |> Kdd.Notion.Transform.table_to_options("Category")
+      KddNotionEx.Database.query(app.budget_db, nil, account.access_token)
+      |> KddNotionEx.Transform.table_to_options("Category")
 
     {:noreply, assign(socket, categories: category_options)}
 
