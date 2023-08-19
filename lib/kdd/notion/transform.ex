@@ -29,7 +29,7 @@ defmodule Kdd.Notion.Transform do
   # end
 
   def page_as_record(page) do
-    Enum.reduce(page["properties"], %{}, fn {k, v}, acc ->
+    Enum.reduce(page["properties"], Map.take(page, ["id"]), fn {k, v}, acc ->
       Map.merge(acc, %{k => parse_property(v)})
     end)
   end

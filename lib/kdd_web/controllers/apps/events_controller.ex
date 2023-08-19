@@ -43,7 +43,14 @@ defmodule KddWeb.Apps.EventsController do
       Kdd.Notion.Database.query(app.events_db, filter, app.account.access_token)
       |> Enum.map(&Kdd.Notion.Transform.page_as_record/1)
 
-    render(conn, :index, title: app.host_name, data: data)
+    render(conn, :index, title: app.host_name, data: data, base_url: ~p"/apps/events/#{app.link}")
+  end
+
+  def register(conn, %{"link" => link, "event_id" => event_id}) do
+    app = Kdd.Repo.get_by!(Kdd.Apps.Events, link: link) |> Kdd.Repo.preload(:account)
+
+    Kdd.Notion.Page.get(event_id, app.account.access_token) |> IO.inspect
+    render(conn, :register, event_id: event_id)
   end
 
 end

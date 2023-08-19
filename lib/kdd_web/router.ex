@@ -57,7 +57,8 @@ defmodule KddWeb.Router do
     put "/configure", EventsController, :configure
 
     get "/:link", EventsController, :index
-
+    get "/:link/register/:event_id", EventsController, :register
+    post "/:link/signup", EventsController, :signup
   end
 
   scope "/", KddWeb do
