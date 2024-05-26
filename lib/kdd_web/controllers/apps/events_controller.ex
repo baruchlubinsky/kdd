@@ -55,8 +55,9 @@ defmodule KddWeb.Apps.EventsController do
   def register(conn, %{"link" => link, "event_id" => event_id}) do
     app = Kdd.Repo.get_by!(Kdd.Apps.Events, link: link) |> Kdd.Repo.preload(:account)
 
-    KddNotionEx.Page.get(event_id, app.account.access_token) |> IO.inspect
-    render(conn, :register, event_id: event_id)
+    event = KddNotionEx.Page.get(event_id, app.account.access_token)
+
+    render(conn, :register, event: event)
   end
 
 end
