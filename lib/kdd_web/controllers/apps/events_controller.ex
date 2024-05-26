@@ -2,7 +2,7 @@ defmodule KddWeb.Apps.EventsController do
   use KddWeb, :controller
   import Ecto.Query
 
-  # alias KddNotionEx.Templates
+  alias KddNotionEx.Templates
 
   plug :load_user!, only: [:settings, :configure]
 
@@ -55,9 +55,20 @@ defmodule KddWeb.Apps.EventsController do
   def register(conn, %{"link" => link, "event_id" => event_id}) do
     app = Kdd.Repo.get_by!(Kdd.Apps.Events, link: link) |> Kdd.Repo.preload(:account)
 
-    event = KddNotionEx.Page.get(event_id, app.account.access_token)
+    event = KddNotionEx.Page.fetch(event_id, app.account.access_token) |> KddNotionEx.Transform.page_as_record()
 
-    render(conn, :register, event: event)
+    render(conn, :register, link: link, event: event, form: %{})
+  end
+
+  def signup(conn, %{"link" => link, "event_id" => event_id} = params) do
+    app = Kdd.Repo.get_by!(Kdd.Apps.Events, link: link) |> Kdd.Repo.preload(:account)
+
+    Templates.new_page("Name", params["name"])
+      |> Templates.add_property(Templates.relation_prop("Events", app.events_db, event_id))
+      |> Templates.add_property(Templates.phone_number_prop("Phone number", params["phone"]))
+      |> KddNotionEx.Page.create_record(app.signups_db, app.account.access_token)
+
+    render(conn, :success)
   end
 
 end
