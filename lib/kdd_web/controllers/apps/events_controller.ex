@@ -46,6 +46,12 @@ defmodule KddWeb.Apps.EventsController do
     render(conn, :index, title: app.host_name, data: data, base_url: ~p"/apps/events/#{app.link}")
   end
 
+  def index(conn, _params) do
+    list = Kdd.Repo.all(Kdd.Apps.Events)
+
+    render(conn, :browse, data: list)
+  end
+
   def register(conn, %{"link" => link, "event_id" => event_id}) do
     app = Kdd.Repo.get_by!(Kdd.Apps.Events, link: link) |> Kdd.Repo.preload(:account)
 
