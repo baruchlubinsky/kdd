@@ -1,72 +1,67 @@
 <div class="flex space-between">
-    <div class="flex-grow w-auto">
-        <h1 class="text-2xl font-semilbold">Spending report</h1>
-    </div>
-    <div class="mr-4">
-        <a href={~p"/apps/budget"} class="text-lg text-gray-600 hover:underline">Home</a>
-    </div>
-    <div>
-        <a href={~p"/apps/budget/settings"} class="text-lg text-gray-600 hover:underline">Settings</a>
-    </div>
+  <div class="flex-grow w-auto">
+    <h1 class="text-2xl font-semilbold">Spending report</h1>
+  </div>
+  <div class="mr-4">
+    <a href={~p"/apps/budget"} class="text-lg text-gray-600 hover:underline">Home</a>
+  </div>
+  <div>
+    <a href={~p"/apps/budget/settings"} class="text-lg text-gray-600 hover:underline">Settings</a>
+  </div>
 </div>
-<.simple_form for={%{}} action={~p"/apps/budget/report"} method="get" >
-    <div class="flex">
-        <div class="flex-grow m-2">
-            <.input id="start_date" type="date" value={@start_date} name="start_date" label="Start" />
-
-        </div>
-        <div class="flex-grow m-2">
-            <.input id="end_date" type="date" value={@end_date} name="end_date" label="End" />
-
-        </div>
+<.simple_form for={%{}} action={~p"/apps/budget/report"} method="get">
+  <div class="flex">
+    <div class="flex-grow m-2">
+      <.input id="start_date" type="date" value={@start_date} name="start_date" label="Start" />
     </div>
-    
-    <.button>Reload</.button>
+    <div class="flex-grow m-2">
+      <.input id="end_date" type="date" value={@end_date} name="end_date" label="End" />
+    </div>
+  </div>
+
+  <.button>Reload</.button>
 </.simple_form>
 <div id="myplot">
-    <.loading_spinner>
-        Loading
-    </.loading_spinner>
+  <.loading_spinner>
+    Loading
+  </.loading_spinner>
 </div>
 <script type="module">
+  import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
+  import {json} from "https://cdn.skypack.dev/d3-fetch@3";
 
-import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-import {json} from "https://cdn.skypack.dev/d3-fetch@3";
+  let query = {
+   start_date: document.getElementById("start_date").value,
+   end_date: document.getElementById("end_date").value
+  };
 
-let query = {
- start_date: document.getElementById("start_date").value,
- end_date: document.getElementById("end_date").value
-};
+  const params = new URLSearchParams(query);
 
-const params = new URLSearchParams(query);
+  json("/api/apps/budget/month_to_date?" + params.toString(), {timeout: 0})
+  .then((data) => {
+      var angle = 0;
+      if (data.length > 12) {
+          angle = 15;
+      }
+      if (data.length > 18) {
+          angle = 30;
+      }
+      const plot = Plot.plot({
+          color: {"legend": true},
+          marginBottom: 40,
+          x: {"axis": null},
+          marks: [
+              Plot.barY(data, Plot.groupX({y: "identity"}, {x: "type", fx: "category", y: "value", fill: "type", tip: true})),
+              Plot.axisFx({anchor: "bottom", tickRotate: angle, label: null, textAnchor: "centre"}),
+              Plot.ruleY([0])
+          ]
+      });
+      const div = document.querySelector("#myplot");
+      var heading = document.createElement("h3");
+      heading.innerHTML = query.start_date + " to " + query.end_date;
+      heading.style.fontFamily = "system-ui";
+      heading.style.fontWeight = "normal";
 
-
-json("/api/apps/budget/month_to_date?" + params.toString(), {timeout: 0})
-.then((data) => {
-    var angle = 0;
-    if (data.length > 12) {
-        angle = 15;
-    }
-    if (data.length > 18) {
-        angle = 30;
-    }
-    const plot = Plot.plot({
-        color: {"legend": true},
-        marginBottom: 40,
-        x: {"axis": null},
-        marks: [
-            Plot.barY(data, Plot.groupX({y: "identity"}, {x: "type", fx: "category", y: "value", fill: "type", tip: true})),
-            Plot.axisFx({anchor: "bottom", tickRotate: angle, label: null, textAnchor: "centre"}),
-            Plot.ruleY([0])
-        ]
-    });
-    const div = document.querySelector("#myplot");
-    var heading = document.createElement("h3");
-    heading.innerHTML = query.start_date + " to " + query.end_date;
-    heading.style.fontFamily = "system-ui";
-    heading.style.fontWeight = "normal";
-
-    div.replaceChildren(heading, plot); 
-});
-
+      div.replaceChildren(heading, plot); 
+  });
 </script>

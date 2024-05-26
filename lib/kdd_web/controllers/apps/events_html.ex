@@ -12,4 +12,13 @@ defmodule KddWeb.Apps.EventsHTML do
     </div>
     """
   end
+
+
+  def host_link(assigns) do
+    assigns = assign(assigns, :url, ~p"/apps/events/#{assigns.record.link}")
+
+    ~H"""
+    <a href={@url}><%= @record.host_name %></a>
+    """
+  end
 end

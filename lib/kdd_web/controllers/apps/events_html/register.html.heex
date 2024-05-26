@@ -1,7 +1,7 @@
 <.heading>Register for <%= @event["Name"] %></.heading>
 <.simple_form :let={f} for={@form} action={~p"/apps/events/#{@link}/signup"}>
-    <.input field={f[:event_id]} type="hidden" value={@event["id"]} /> 
-    <.input field={f[:name]} label="Your name" />
-    <.input field={f[:phone]} label="Phone number" />
-    <.button>Sign up</.button>
+  <.input field={f[:event_id]} type="hidden" value={@event["id"]} />
+  <.input field={f[:name]} label="Your name" />
+  <.input field={f[:phone]} label="Phone number" />
+  <.button>Sign up</.button>
 </.simple_form>

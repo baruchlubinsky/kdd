@@ -1,5 +1,5 @@
 <.heading><%= @title %></.heading>
 
 <%= for record <- @data do %>
-    <.event_row record={record} base_url={@base_url} /> 
+  <.event_row record={record} base_url={@base_url} />
 <% end %>

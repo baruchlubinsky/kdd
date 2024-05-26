@@ -1,5 +1,4 @@
 defmodule Kdd.Notion.Config do
-
   def get_setting(name) do
     Application.get_env(:kdd, :notion) |> Keyword.get(name)
   end
@@ -15,5 +14,4 @@ defmodule Kdd.Notion.Config do
   def client_secret() do
     get_setting(:client_secret)
   end
-
 end

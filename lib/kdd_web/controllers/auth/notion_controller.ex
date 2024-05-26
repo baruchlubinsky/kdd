@@ -12,24 +12,31 @@ defmodule KddWeb.Auth.NotionController do
 
     case exchange_token(code, redirect) do
       {:ok, %{"workspace_id" => workspace_id} = data} ->
-        account = Kdd.Repo.one(from(Kdd.Notion.Account, where: [workspace_id: ^workspace_id], preload: :user))
+        account =
+          Kdd.Repo.one(
+            from(Kdd.Notion.Account, where: [workspace_id: ^workspace_id], preload: :user)
+          )
 
         user =
           if is_nil(account) do
             user = Kdd.Repo.insert!(%Kdd.Kdd.User{})
+
             %Kdd.Notion.Account{user_id: user.id}
-              |> Kdd.Notion.Account.changeset(data)
-              |> Kdd.Repo.insert!()
+            |> Kdd.Notion.Account.changeset(data)
+            |> Kdd.Repo.insert!()
+
             user
           else
             Kdd.Notion.Account.changeset(account, data)
-              |> Kdd.Repo.update!()
+            |> Kdd.Repo.update!()
+
             account.user
           end
 
         token = KddWeb.Auth.SessionController.new_token(user)
 
-        put_resp_cookie(conn, "kdd_session", token, sign: true, max_age: 30*24*60*60) # Remember me for 30 days
+        # Remember me for 30 days
+        put_resp_cookie(conn, "kdd_session", token, sign: true, max_age: 30 * 24 * 60 * 60)
         |> redirect(to: ~p"/notion")
 
       {:error, data} ->
@@ -53,7 +60,6 @@ defmodule KddWeb.Auth.NotionController do
       %Finch.Response{status: 200, body: body} -> {:ok, Jason.decode!(body)}
       %Finch.Response{body: body} -> {:error, Jason.decode!(body)}
     end
-
   end
 
   def oauth_token_params(code, redirect) when not is_nil(redirect) do

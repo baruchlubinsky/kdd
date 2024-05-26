@@ -50,8 +50,8 @@ defmodule Kdd.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.4.0"},
       {:plug_cowboy, "~> 2.5"},
-      {:kdd_notion_ex, path: "../kdd_notion_ex"}
-      #{:kdd_notion_ex, git: "https://github.com/baruchlubinsky/kdd_notion_ex.git", tag: "0.1.5"}
+      # {:kdd_notion_ex, path: "../kdd_notion_ex"}
+      {:kdd_notion_ex, git: "https://github.com/baruchlubinsky/kdd_notion_ex.git", tag: "0.1.6"}
     ]
   end
 

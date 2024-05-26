@@ -12,15 +12,21 @@ defmodule KddWeb.Apps.BudgetController do
 
   def settings(conn, _params) do
     user = conn.assigns[:user]
-    record = Kdd.Repo.one(from(Kdd.Apps.Budget, where: [account_id: ^user.notion_account.id])) || %Kdd.Apps.Budget{}
-    form =  Kdd.Apps.Budget.changeset(record, %{})
+
+    record =
+      Kdd.Repo.one(from(Kdd.Apps.Budget, where: [account_id: ^user.notion_account.id])) ||
+        %Kdd.Apps.Budget{}
+
+    form = Kdd.Apps.Budget.changeset(record, %{})
     render(conn, :settings, form: form)
   end
 
   def configure(conn, params) do
     user = conn.assigns[:user]
 
-    record = Kdd.Repo.one(from(Kdd.Apps.Budget, where: [account_id: ^user.notion_account.id])) || %Kdd.Apps.Budget{account_id: user.notion_account.id}
+    record =
+      Kdd.Repo.one(from(Kdd.Apps.Budget, where: [account_id: ^user.notion_account.id])) ||
+        %Kdd.Apps.Budget{account_id: user.notion_account.id}
 
     record
     |> Kdd.Apps.Budget.changeset(params["budget"])
@@ -84,7 +90,15 @@ defmodule KddWeb.Apps.BudgetController do
       start_date = params["start_date"] || start_of_month()
       end_date = params["end_date"] || end_of_month()
 
-      data = monthly_data(app.expense_db, app.budget_db, start_date, end_date, user.notion_account.access_token)
+      data =
+        monthly_data(
+          app.expense_db,
+          app.budget_db,
+          start_date,
+          end_date,
+          user.notion_account.access_token
+        )
+
       json(conn, data)
     end
   end
@@ -99,8 +113,8 @@ defmodule KddWeb.Apps.BudgetController do
 
   def monthly_data(expenses, categories, start_date, end_date, token) do
     cat_filter =
-      %{"filter" =>
-        %{
+      %{
+        "filter" => %{
           "property" => "Amount",
           "number" => %{
             "less_than" => 0
@@ -109,8 +123,8 @@ defmodule KddWeb.Apps.BudgetController do
       }
 
     exp_filter =
-      %{"filter" =>
-        %{
+      %{
+        "filter" => %{
           "and" => [
             %{
               "property" => "Date",
@@ -146,19 +160,18 @@ defmodule KddWeb.Apps.BudgetController do
           {^id, _sum} -> true
           _ -> false
         end)
+
       {_, [budget]} =
         Enum.find(category_data, fn
           {^cat, _amount} -> true
           _ -> false
         end)
+
       [
         %{"category" => cat, "type" => "budget", "value" => -budget},
         %{"category" => cat, "type" => "spend", "value" => total}
       ]
     end)
     |> List.flatten()
-
-
   end
-
 end

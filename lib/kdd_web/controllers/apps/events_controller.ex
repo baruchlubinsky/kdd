@@ -6,18 +6,23 @@ defmodule KddWeb.Apps.EventsController do
 
   plug :load_user!, only: [:settings, :configure]
 
-
   def settings(conn, _params) do
     user = conn.assigns[:user]
-    record = Kdd.Repo.one(from(Kdd.Apps.Events, where: [account_id: ^user.notion_account.id])) || %Kdd.Apps.Events{}
-    form =  Kdd.Apps.Events.changeset(record, %{})
+
+    record =
+      Kdd.Repo.one(from(Kdd.Apps.Events, where: [account_id: ^user.notion_account.id])) ||
+        %Kdd.Apps.Events{}
+
+    form = Kdd.Apps.Events.changeset(record, %{})
     render(conn, :settings, form: form)
   end
 
   def configure(conn, params) do
     user = conn.assigns[:user]
 
-    record = Kdd.Repo.one(from(Kdd.Apps.Events, where: [account_id: ^user.notion_account.id])) || %Kdd.Apps.Events{account_id: user.notion_account.id}
+    record =
+      Kdd.Repo.one(from(Kdd.Apps.Events, where: [account_id: ^user.notion_account.id])) ||
+        %Kdd.Apps.Events{account_id: user.notion_account.id}
 
     record
     |> Kdd.Apps.Events.changeset(params["events"])
@@ -55,7 +60,9 @@ defmodule KddWeb.Apps.EventsController do
   def register(conn, %{"link" => link, "event_id" => event_id}) do
     app = Kdd.Repo.get_by!(Kdd.Apps.Events, link: link) |> Kdd.Repo.preload(:account)
 
-    event = KddNotionEx.Page.fetch(event_id, app.account.access_token) |> KddNotionEx.Transform.page_as_record()
+    event =
+      KddNotionEx.Page.fetch(event_id, app.account.access_token)
+      |> KddNotionEx.Transform.page_as_record()
 
     render(conn, :register, link: link, event: event, form: %{})
   end
@@ -63,12 +70,23 @@ defmodule KddWeb.Apps.EventsController do
   def signup(conn, %{"link" => link, "event_id" => event_id} = params) do
     app = Kdd.Repo.get_by!(Kdd.Apps.Events, link: link) |> Kdd.Repo.preload(:account)
 
-    Templates.new_page("Name", params["name"])
+    %{"id" => signup_id} =
+      Templates.new_page("Name", params["name"])
       |> Templates.add_property(Templates.relation_prop("Events", app.events_db, event_id))
       |> Templates.add_property(Templates.phone_number_prop("Phone number", params["phone"]))
       |> KddNotionEx.Page.create_record(app.signups_db, app.account.access_token)
+      |> KddNotionEx.Page.decode_response()
 
-    render(conn, :success)
+    render(conn, :success, link: ~p"/apps/events/#{link}/signup/#{signup_id}")
   end
 
+  def view_registration(conn, %{"link" => link, "signup_id" => signup_id}) do
+    app = Kdd.Repo.get_by!(Kdd.Apps.Events, link: link) |> Kdd.Repo.preload(:account)
+
+    signup =
+      KddNotionEx.Page.fetch(signup_id, app.account.access_token)
+      |> KddNotionEx.Transform.page_as_record()
+
+    render(conn, :signup, signup: signup)
+  end
 end

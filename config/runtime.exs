@@ -14,8 +14,10 @@ if File.exists?(".env") do
     String.split(line, "=")
     |> Enum.each(fn
       [name, "=", value] ->
-        System.put_env(String.trim(name), String.trim(value)) |>IO.inspect
-      _ -> :ok
+        System.put_env(String.trim(name), String.trim(value)) |> IO.inspect()
+
+      _ ->
+        :ok
     end)
   end)
 end
@@ -40,7 +42,6 @@ config :kdd, :notion,
   auth_url: System.get_env("NOTION_AUTH_URL"),
   client_id: System.get_env("NOTION_CLIENT_ID"),
   client_secret: System.get_env("NOTION_CLIENT_SECRET")
-
 
 if config_env() == :prod do
   database_url =
