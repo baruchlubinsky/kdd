@@ -89,4 +89,14 @@ defmodule KddWeb.Apps.EventsController do
 
     render(conn, :signup, signup: signup)
   end
+
+  def cancel_registration(conn, %{"link" => link, "signup_id" => signup_id}) do
+    app = Kdd.Repo.get_by!(Kdd.Apps.Events, link: link) |> Kdd.Repo.preload(:account)
+
+    cancel = KddNotionEx.Templates.checkbox_prop("Cancelled", true)
+
+    KddNotionEx.Page.update(signup_id, cancel, app.account.access_token)
+
+    redirect(conn, to: ~p"/apps/events/#{link}/signup/#{signup_id}")
+  end
 end

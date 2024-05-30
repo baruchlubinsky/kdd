@@ -59,6 +59,8 @@ defmodule KddWeb.Router do
     post "/:link/signup", EventsController, :signup
 
     get "/:link/signup/:signup_id", EventsController, :view_registration
+    post "/:link/signup/:signup_id/cancel", EventsController, :cancel_registration
+
   end
 
   scope "/", KddWeb do
