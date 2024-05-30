@@ -1,0 +1,13 @@
+<.heading>Your booking for <%= @signup["Event name"] %></.heading>
+<p>
+<span class={if @signup["Cancelled"], do: "line-through"}> Time: <%= @signup["Event date"] %> </span>
+</p>
+<%= if @signup["Cancelled"] do %>
+    <p><span class="text-red-700">Cancelled</span></p>
+<% else %>
+    <.simple_form for={@signup} action={"#{@signup["id"]}/cancel"}>
+        <:actions>
+            <.button>Cancel</.button>
+        </:actions>
+    </.simple_form>
+<% end %>
