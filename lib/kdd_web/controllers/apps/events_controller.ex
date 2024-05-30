@@ -37,10 +37,20 @@ defmodule KddWeb.Apps.EventsController do
 
     filter = %{
       filter: %{
-        "property" => "Posted",
-        "checkbox" => %{
-          "equals" => true
+        and: [
+        %{
+          "property" => "Date",
+          "date" =>%{
+            "on_or_after" => Date.to_iso8601(Date.utc_today())
+          }
+        },
+        %{
+          "property" => "Posted",
+          "checkbox" => %{
+            "equals" => true
+          }
         }
+        ]
       }
     }
 
