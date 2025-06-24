@@ -11,7 +11,7 @@ defmodule KddWeb.CoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  use Gettext, backend: MyApp.Gettext
+  use Gettext, backend: KddWeb.Gettext
 
   slot :inner_block
   def loading_spinner(assigns) do

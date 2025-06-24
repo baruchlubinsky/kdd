@@ -48,7 +48,7 @@ defmodule KddWeb.Auth.NotionController do
     ]
 
     Finch.build(:post, "https://api.notion.com/v1/oauth/token", headers, Jason.encode!(body))
-    |> Finch.request!(:notion_http)
+    |> KddNotionEx.Api.request!
     |> case do
       %Finch.Response{status: 200, body: body} -> {:ok, Jason.decode!(body)}
       %Finch.Response{body: body} -> {:error, Jason.decode!(body)}

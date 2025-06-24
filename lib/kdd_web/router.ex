@@ -59,7 +59,7 @@ defmodule KddWeb.Router do
 
     get "/:link", EventsController, :index
     get "/:link/register/:event_id", EventsController, :register
-    post "/:link/signup", EventsController, :signup
+    post "/:link/signup", EventsController, :create_signup
   end
 
   scope "/", KddWeb do
