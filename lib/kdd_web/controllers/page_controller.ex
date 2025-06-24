@@ -10,6 +10,10 @@ defmodule KddWeb.PageController do
     render(conn, :about)
   end
 
+  def kdd(conn, _params) do
+    render(conn, :kdd)
+  end
+
   def notion(conn, _params) do
     session_token = conn.assigns[:kdd_token]
 
