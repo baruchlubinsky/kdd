@@ -1,12 +1,12 @@
 <div class="flex space-between">
-    <div class="flex-grow w-auto">
-        <h1 class="text-2xl font-semilbold">Upload expense</h1>
-    </div>
-    <div class="mr-4">
-        <a href={~p"/apps/budget"} class="text-lg text-gray-600 hover:underline">Home</a>
-    </div>
-    <div>
-        <a href={~p"/apps/budget/settings"} class="text-lg text-gray-600 hover:underline">Settings</a>
-    </div>
+  <div class="flex-grow w-auto">
+    <h1 class="text-2xl font-semilbold">Upload expense</h1>
+  </div>
+  <div class="mr-4">
+    <a href={~p"/apps/budget"} class="text-lg text-gray-600 hover:underline">Home</a>
+  </div>
+  <div>
+    <a href={~p"/apps/budget/settings"} class="text-lg text-gray-600 hover:underline">Settings</a>
+  </div>
 </div>
 <%= live_render(@conn, KddWeb.LiveExpense, session: %{"user_id" => @conn.assigns[:user].id}) %>

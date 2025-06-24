@@ -1,8 +1,4 @@
-<div class="flex space-between">
-    <div class="flex-grow w-auto">
-        <h1 class="text-2xl font-semilbold">Settings</h1>
-    </div>
-</div>
+<.heading>Settings</.heading>
 <.simple_form :let={f} for={@form} action={~p"/apps/events/configure"}>
   <.input field={f[:host_name]} label="Your name" />
   <.input field={f[:link]} label="Page link" />

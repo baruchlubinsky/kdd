@@ -26,7 +26,6 @@ defmodule KddWeb.Router do
     get "/about", PageController, :about
     get "/kdd", PageController, :kdd
     get "/notion", PageController, :notion
-
   end
 
   scope "/auth", KddWeb.Auth do
@@ -46,7 +45,6 @@ defmodule KddWeb.Router do
     get "/expense", BudgetController, :expense
     post "/expense", BudgetController, :record_expense
     get "/report", BudgetController, :report
-
   end
 
   scope "/apps/events", KddWeb.Apps do
@@ -59,7 +57,11 @@ defmodule KddWeb.Router do
 
     get "/:link", EventsController, :index
     get "/:link/register/:event_id", EventsController, :register
-    post "/:link/signup", EventsController, :create_signup
+    post "/:link/signup", EventsController, :signup
+
+    get "/:link/signup/:signup_id", EventsController, :view_registration
+    post "/:link/signup/:signup_id/cancel", EventsController, :cancel_registration
+
   end
 
   scope "/", KddWeb do

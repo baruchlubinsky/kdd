@@ -26,5 +26,4 @@ defmodule Mix.Tasks.Podman.Db do
 
     Mix.shell().cmd(run_db)
   end
-
 end

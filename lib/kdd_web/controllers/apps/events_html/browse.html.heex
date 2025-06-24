@@ -1,0 +1,7 @@
+<.heading>Browse hosts</.heading>
+
+<%= for record <- @data do %>
+  <p>
+    <.host_link record={record} />
+  </p>
+<% end %>

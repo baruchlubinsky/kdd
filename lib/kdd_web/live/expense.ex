@@ -21,19 +21,25 @@ defmodule KddWeb.LiveExpense do
       <:loading>
         <div class="while-submitting">
           <.loading_spinner>
-          Saving
+            Saving
           </.loading_spinner>
         </div>
       </:loading>
       <.input type="text" label="Title" field={@expense[:name]} />
-      <.input type="select" label="Category" field={@expense[:category]} options={@categories || []} disabled={!@categories}/>
+      <.input
+        type="select"
+        label="Category"
+        field={@expense[:category]}
+        options={@categories || []}
+        disabled={!@categories}
+      />
       <.input type="number" label="Amount" field={@expense[:amount]} />
-      <.button >Save</.button>
+      <.button>Save</.button>
     </.simple_form>
     """
   end
 
-  def handle_event("save",  %{"name" => name, "amount" => amount, "category" => category}, socket) do
+  def handle_event("save", %{"name" => name, "amount" => amount, "category" => category}, socket) do
     alias KddNotionEx.Templates
 
     account = Kdd.Repo.get!(Kdd.Notion.Account, socket.assigns.notion_id)
@@ -54,7 +60,6 @@ defmodule KddWeb.LiveExpense do
   end
 
   def handle_info({:load_categories, account}, socket) do
-
     app = Kdd.Repo.one!(from(Kdd.Apps.Budget, where: [account_id: ^account.id]))
 
     category_options =
@@ -62,7 +67,5 @@ defmodule KddWeb.LiveExpense do
       |> KddNotionEx.Transform.table_to_options("Category")
 
     {:noreply, assign(socket, categories: category_options)}
-
   end
-
 end

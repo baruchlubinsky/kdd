@@ -18,7 +18,10 @@ defmodule KddWeb.PageController do
     session_token = conn.assigns[:kdd_token]
 
     if !session_token do
-      render(conn, :notion, contact: "mailto:#{Application.get_env(:kdd, :contact_email)}", integration: Kdd.Notion.Config.auth_url())
+      render(conn, :notion,
+        contact: "mailto:#{Application.get_env(:kdd, :contact_email)}",
+        integration: Kdd.Notion.Config.auth_url()
+      )
     else
       session =
         from(Kdd.Kdd.Session, where: [token: ^session_token], preload: :user)
@@ -27,9 +30,15 @@ defmodule KddWeb.PageController do
       user = Kdd.Repo.preload(session.user, :notion_account)
 
       if is_nil(user.notion_account) do
-        render(conn, :notion, contact: "mailto:#{Application.get_env(:kdd, :contact_email)}", integration: Kdd.Notion.Config.auth_url())
+        render(conn, :notion,
+          contact: "mailto:#{Application.get_env(:kdd, :contact_email)}",
+          integration: Kdd.Notion.Config.auth_url()
+        )
       else
-        render(conn, :notion_logged_in, contact: "mailto:#{Application.get_env(:kdd, :contact_email)}", workspace_name: user.notion_account.workspace_name)
+        render(conn, :notion_logged_in,
+          contact: "mailto:#{Application.get_env(:kdd, :contact_email)}",
+          workspace_name: user.notion_account.workspace_name
+        )
       end
     end
   end

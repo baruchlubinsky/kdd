@@ -87,6 +87,9 @@ defmodule KddWeb do
       import KddWeb.CoreComponents
       import KddWeb.Gettext
 
+      # Custom components
+      import KddWeb.KddComponents
+
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
 

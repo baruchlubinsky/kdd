@@ -1,47 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <%= live_title_tag assigns[:page_title] || "KDD" %>
-    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"}/>
-    <link rel="manifest" href={~p"/images/site.webmanifest"}>
-    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}></script>
+    <%= live_title_tag(assigns[:page_title] || "KDD") %>
+    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
+    <link rel="manifest" href={~p"/images/site.webmanifest"} />
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
+    </script>
   </head>
   <body>
     <header>
-
       <nav class="flex items-center justify-between flex-wrap bg-black lg:shadow-xl sm:shadow text-white p-6">
         <div class="flex items-center flex-shrink-0 mr-6">
           <a href="/" class="flex items-center py-4 px-2">
-            <img src={~p"/images/kdd-logo-inverse.png"} alt="KDD Logo" alt="Logo" class="h-8 w-8 mr-2" />
+            <img
+              src={~p"/images/kdd-logo-inverse.png"}
+              alt="KDD Logo"
+              alt="Logo"
+              class="h-8 w-8 mr-2"
+            />
           </a>
         </div>
         <div class="w-full block flex-grow hidden lg:flex lg:items-center lg:w-auto">
           <div class="text-sm lg:flex-grow">
-            <a href={~p"/notion"} class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4">
+            <a
+              href={~p"/notion"}
+              class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4"
+            >
               Notion
             </a>
-            <a href={~p"/about"} class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4">
+            <a
+              href={~p"/about"}
+              class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4"
+            >
               About
             </a>
             <a href={~p"/kdd"} class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4">
               KDD
             </a>
             <%= if @kdd_token do %>
-              <a href={~p"/apps/budget"} class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4">
+              <a
+                href={~p"/apps/budget"}
+                class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4"
+              >
                 Budget
+              </a>
+              <a
+                href={~p"/apps/events"}
+                class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4"
+              >
+                Events
               </a>
             <% end %>
           </div>
         </div>
         <div class="inline-block items-center">
           <%= if @conn.assigns[:kdd_token] do %>
-            <a href={~p"/auth/logout"} class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4">
-                Logout
-              </a>
+            <a
+              href={~p"/auth/logout"}
+              class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4"
+            >
+              Logout
+            </a>
           <% end %>
         </div>
       </nav>
