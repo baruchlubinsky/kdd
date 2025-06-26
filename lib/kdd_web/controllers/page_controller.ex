@@ -16,7 +16,7 @@ defmodule KddWeb.PageController do
 
   def yoga(conn, _params) do
     render(conn, :yoga,
-      contact: Application.get_env(:kdd, :consulting_email)
+      contact: Application.get_env(:kdd, :yoga_email)
     )
   end
 
