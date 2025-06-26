@@ -14,12 +14,18 @@ defmodule KddWeb.PageController do
     render(conn, :kdd)
   end
 
+  def yoga(conn, _params) do
+    render(conn, :yoga,
+      contact: Application.get_env(:kdd, :consulting_email)
+    )
+  end
+
   def notion(conn, _params) do
     session_token = conn.assigns[:kdd_token]
 
     if !session_token do
       render(conn, :notion,
-        contact: "mailto:#{Application.get_env(:kdd, :contact_email)}",
+        contact: Application.get_env(:kdd, :consulting_email),
         integration: Kdd.Notion.Config.auth_url()
       )
     else
@@ -31,12 +37,12 @@ defmodule KddWeb.PageController do
 
       if is_nil(user.notion_account) do
         render(conn, :notion,
-          contact: "mailto:#{Application.get_env(:kdd, :contact_email)}",
+          contact: Application.get_env(:kdd, :consulting_email),
           integration: Kdd.Notion.Config.auth_url()
         )
       else
         render(conn, :notion_logged_in,
-          contact: "mailto:#{Application.get_env(:kdd, :contact_email)}",
+          contact: Application.get_env(:kdd, :consulting_email),
           workspace_name: user.notion_account.workspace_name
         )
       end

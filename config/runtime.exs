@@ -35,7 +35,8 @@ if System.get_env("PHX_SERVER") do
   config :kdd, KddWeb.Endpoint, server: true
 end
 
-config :kdd, :contact_email, System.get_env("CONTACT_EMAIL")
+config :kdd, :consulting_email, System.get_env("CONSULT_EMAIL")
+config :kdd, :yoga_email, System.get_env("YOGA_EMAIL")
 config :kdd, :support_email, System.get_env("SUPPORT_EMAIL")
 
 config :kdd, :notion,

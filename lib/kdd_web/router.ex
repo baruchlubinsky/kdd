@@ -26,6 +26,8 @@ defmodule KddWeb.Router do
     get "/about", PageController, :about
     get "/kdd", PageController, :kdd
     get "/notion", PageController, :notion
+    get "/yoga", PageController, :yoga
+
   end
 
   scope "/auth", KddWeb.Auth do
