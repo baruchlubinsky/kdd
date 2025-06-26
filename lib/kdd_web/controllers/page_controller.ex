@@ -20,11 +20,11 @@ defmodule KddWeb.PageController do
     )
   end
 
-  def notion(conn, _params) do
+  def consult(conn, _params) do
     session_token = conn.assigns[:kdd_token]
 
     if !session_token do
-      render(conn, :notion,
+      render(conn, :consult,
         contact: Application.get_env(:kdd, :consulting_email),
         integration: Kdd.Notion.Config.auth_url()
       )
@@ -36,7 +36,7 @@ defmodule KddWeb.PageController do
       user = Kdd.Repo.preload(session.user, :notion_account)
 
       if is_nil(user.notion_account) do
-        render(conn, :notion,
+        render(conn, :consult,
           contact: Application.get_env(:kdd, :consulting_email),
           integration: Kdd.Notion.Config.auth_url()
         )

@@ -25,7 +25,8 @@ defmodule KddWeb.Router do
     get "/", PageController, :home
     get "/about", PageController, :about
     get "/kdd", PageController, :kdd
-    get "/notion", PageController, :notion
+    get "/notion", PageController, :consult
+    get "/consult", PageController, :consult
     get "/yoga", PageController, :yoga
 
   end

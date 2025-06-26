@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <%= live_title_tag(assigns[:page_title] || "KDD") %>
+    <title>{assigns[:page_title] || "Karma Driven Development"}</title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <link rel="manifest" href={~p"/images/site.webmanifest"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
@@ -32,6 +32,12 @@
               Yoga
             </a>
             <a
+              href={~p"/consult"}
+              class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4"
+            >
+              Consulting
+            </a>
+            <a
               href={~p"/about"}
               class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4"
             >
@@ -40,13 +46,8 @@
             <a href={~p"/kdd"} class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4">
               KDD
             </a>
-            <a
-              href={~p"/notion"}
-              class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4"
-            >
-              Notion
-            </a>
             <%= if @kdd_token do %>
+              |
               <a
                 href={~p"/apps/budget"}
                 class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4"
@@ -64,7 +65,6 @@
         </div>
         <div class="inline-block items-center">
           <%= if @conn.assigns[:kdd_token] do %>
-            |
             <a
               href={~p"/auth/logout"}
               class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4"
