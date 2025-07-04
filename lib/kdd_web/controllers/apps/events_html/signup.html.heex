@@ -1,6 +1,6 @@
 <.heading>Your booking for <%= @signup["Event name"] %></.heading>
 <p>
-<span class={if @signup["Cancelled"], do: "line-through"}> Time: <%= @signup["Event date"] %> </span>
+<span class={if @signup["Cancelled"], do: "line-through"}> Time: <%= raw print_time(@signup["Event date"]) %> </span>
 </p>
 <%= if @signup["Cancelled"] do %>
     <p><span class="text-red-700">Cancelled</span></p>

@@ -7,6 +7,8 @@ defmodule Kdd.Apps.Events do
     field :events_db, :string
     field :signups_db, :string
 
+    field :events_name, :string
+
     field :host_name, :string
     field :link, :string
 
@@ -16,7 +18,7 @@ defmodule Kdd.Apps.Events do
   @doc false
   def changeset(app, attrs) do
     app
-    |> cast(attrs, [:events_db, :signups_db, :host_name, :link])
+    |> cast(attrs, [:events_db, :events_name, :signups_db, :host_name, :link])
     |> validate_required([:events_db, :signups_db, :host_name, :link])
     |> validate_length(:events_db, is: 32)
     |> validate_length(:events_db, is: 32)

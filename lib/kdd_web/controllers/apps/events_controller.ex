@@ -20,13 +20,11 @@ defmodule KddWeb.Apps.EventsController do
   def configure(conn, params) do
     user = conn.assigns[:user]
 
-    record =
-      Kdd.Repo.one(from(Kdd.Apps.Events, where: [account_id: ^user.notion_account.id])) ||
-        %Kdd.Apps.Events{account_id: user.notion_account.id}
+    record = Kdd.Repo.one(from(Kdd.Apps.Events, where: [account_id: ^user.notion_account.id])) || %Kdd.Apps.Events{account_id: user.notion_account.id}
 
-    record
-    |> Kdd.Apps.Events.changeset(params["events"])
-    |> Kdd.Repo.insert_or_update!()
+    record =
+      Kdd.Apps.Events.changeset(record, params["events"])
+      |> Kdd.Repo.insert_or_update!()
 
     put_flash(conn, :info, "Saved.")
     |> redirect(to: ~p"/apps/events/#{record.link}")
@@ -82,10 +80,10 @@ defmodule KddWeb.Apps.EventsController do
 
     %{"id" => signup_id} =
       Templates.new_page("Name", params["name"])
-      |> Templates.add_property(Templates.relation_prop("Events", app.events_db, event_id))
+      |> Templates.add_property(Templates.relation_prop(app.events_name, app.events_db, event_id))
       |> Templates.add_property(Templates.phone_number_prop("Phone number", params["phone"]))
       |> KddNotionEx.Page.create_record(app.signups_db, app.account.access_token)
-      |> KddNotionEx.Page.decode_response()
+      |> KddNotionEx.Api.read_body()
 
     render(conn, :success, link: ~p"/apps/events/#{link}/signup/#{signup_id}")
   end
@@ -105,7 +103,7 @@ defmodule KddWeb.Apps.EventsController do
 
     cancel = KddNotionEx.Templates.checkbox_prop("Cancelled", true)
 
-    KddNotionEx.Page.update(signup_id, cancel, app.account.access_token)
+    KddNotionEx.Page.update(cancel, signup_id, app.account.access_token)
 
     redirect(conn, to: ~p"/apps/events/#{link}/signup/#{signup_id}")
   end
