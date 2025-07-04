@@ -21,4 +21,9 @@ defmodule Kdd.Notion.Account do
     |> cast(attrs, [:access_token, :bot_id, :workspace_name, :workspace_id])
     |> validate_required([:workspace_id])
   end
+
+  def dev_account(secret) do
+    user = %Kdd.Kdd.User{} |> Kdd.Repo.insert!()
+    %Kdd.Notion.Account{user: user, access_token: secret, bot_id: "Dev bot"} |> Kdd.Repo.insert()
+  end
 end

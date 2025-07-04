@@ -6,9 +6,12 @@ defmodule KddWeb.LiveExpense do
     account = Kdd.Repo.get_by!(Kdd.Notion.Account, user_id: session["user_id"])
     socket = assign(socket, notion_id: account.id)
 
-    send(self(), {:load_categories, account})
-
-    {:ok, assign(socket, categories: false, expense: new_form())}
+    if is_nil(socket.assigns[:categories]) do
+      send(self(), {:load_categories, account})
+      {:ok, assign(socket, categories: false, expense: new_form())}
+    else
+      {:ok, assign(socket, expense: new_form())}
+    end
   end
 
   def new_form() do
@@ -45,6 +48,7 @@ defmodule KddWeb.LiveExpense do
     account = Kdd.Repo.get!(Kdd.Notion.Account, socket.assigns.notion_id)
     app = Kdd.Repo.get_by(Kdd.Apps.Budget, account_id: account.id)
 
+    socket =
     if is_nil(app) do
       put_flash(socket, :warn, "App is not configured.")
       |> push_navigate(to: ~p"/apps/budget/settings")
@@ -54,9 +58,11 @@ defmodule KddWeb.LiveExpense do
       |> Templates.add_property(Templates.relation_prop("Category", app.budget_db, category))
       |> Templates.add_property(Templates.datestamp("Date"))
       |> KddNotionEx.Page.create_record(app.expense_db, account.access_token)
+
+      put_flash(socket, :info, "Saved.")
     end
 
-    {:noreply, assign(socket, :expense, new_form())}
+    {:reply, %{}, assign(socket, :expense, new_form())}
   end
 
   def handle_info({:load_categories, account}, socket) do

@@ -19,6 +19,9 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 
 # Testing the Notion API locally
 
-Create a private integration and save the secret in your local database in `notion_accounts.access_token`. You may use this as the `token` argument in the Notion library. 
+`Kdd.Notion.Account` 
 
-Add a session to your browser by first creating a `user` record manually, and then visiting `/dev/token`.
+Create a private integration in you Notion workspace and save its Internal Integration Secret in your local database in `notion_accounts.access_token`. 
+You may use this as the `token` argument in the Notion library. 
+
+Add a session to your browser by first creating a `user` record manually, with the above token associated, and then visiting `/dev/token`.
