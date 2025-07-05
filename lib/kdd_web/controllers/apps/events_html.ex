@@ -19,6 +19,21 @@ defmodule KddWeb.Apps.EventsHTML do
     """
   end
 
+  attr :record, :map, required: true
+  attr :link, :string, required: true
+  attr :form, :map, default: %{}
+
+  def signup_form(assigns) do
+    ~H"""
+    <.simple_form :let={f} for={@form} action={~p"/apps/events/#{@link}/signup"}>
+      <.input field={f[:event_id]} type="hidden" value={@record["id"]} />
+      <.input field={f[:name]} label="Your name" />
+      <.input field={f[:phone]} label="Phone number" />
+      <.button>Sign up</.button>
+    </.simple_form>
+    """
+  end
+
   def print_time({st, et}) do
     "<span class=\"kdd_timestamp\" >#{st}</span> to <span class=\"kdd_timestamp\" >#{et}</span>"
   end
