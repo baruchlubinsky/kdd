@@ -3,13 +3,18 @@ defmodule KddWeb.Apps.EventsHTML do
 
   embed_templates "events_html/*"
 
+  attr :record, :map, required: true
+  attr :link, :string, required: true
+
   def event_row(assigns) do
-    assigns = assign(assigns, :link, "#{assigns.base_url}/register/#{assigns.record["id"]}")
-    time = print_time(assigns.record["Date"])
-    assigns = assign(assigns, :time, time)
     ~H"""
     <div>
-      <a href={@link}><%= @record["Name"] %> at {raw @time}</a>
+      <a href={@link}>{@record["Name"]} at {raw print_time(@record["Date"])}</a>
+    </div>
+    <div :if={@record["Poster"]} >
+      <%= for image <- @record["Poster"]["files"] do %>
+      <img src={image["file"]["url"]} alt={image["file"]["name"]} />
+      <% end %>
     </div>
     """
   end

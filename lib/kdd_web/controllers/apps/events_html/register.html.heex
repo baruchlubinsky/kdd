@@ -1,6 +1,7 @@
-<.heading>Register for <%= @event["Name"] %></.heading>
+<.heading>Register for <%= @record["Name"] %></.heading>
+<.event_row record={@record} link={@link} />
 <.simple_form :let={f} for={@form} action={~p"/apps/events/#{@link}/signup"}>
-  <.input field={f[:event_id]} type="hidden" value={@event["id"]} />
+  <.input field={f[:event_id]} type="hidden" value={@record["id"]} />
   <.input field={f[:name]} label="Your name" />
   <.input field={f[:phone]} label="Phone number" />
   <.button>Sign up</.button>

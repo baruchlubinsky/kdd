@@ -72,7 +72,7 @@ defmodule KddWeb.Apps.EventsController do
       KddNotionEx.Page.fetch(event_id, app.account.access_token)
       |> KddNotionEx.Transform.page_as_record()
 
-    render(conn, :register, link: link, event: event, form: %{})
+    render(conn, :register, link: link, record: event, form: %{})
   end
 
   def signup(conn, %{"link" => link, "event_id" => event_id} = params) do
