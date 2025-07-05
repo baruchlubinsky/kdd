@@ -26,3 +26,7 @@
 <p>
     <span class="font-semibold">Contact:</span><a href={"mailto:#{@contact}"}>{@contact}</a>
 </p>
+<h1 class="text-2xl text-align-centre font-semibold">Upcoming classes</h1>
+<%= for record <- @data do %>
+  <.event_row record={record} link={"#{@base_url}/register/#{record["id"]}"} media="Banner" />
+<% end %>

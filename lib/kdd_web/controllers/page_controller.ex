@@ -15,8 +15,33 @@ defmodule KddWeb.PageController do
   end
 
   def yoga(conn, _params) do
+    app = Kdd.Repo.get_by!(Kdd.Apps.Events, link: "mwm") |> Kdd.Repo.preload(:account)
+
+    filter = %{
+      filter: %{
+        and: [
+        %{
+          "property" => "Date",
+          "date" =>%{
+            "on_or_after" => Date.to_iso8601(Date.utc_today())
+          }
+        },
+        %{
+          "property" => "Posted",
+          "checkbox" => %{
+            "equals" => true
+          }
+        }
+        ]
+      }
+    }
+
+    data =
+      KddNotionEx.Database.query(app.events_db, filter, app.account.access_token)
+      |> Enum.map(&KddNotionEx.Transform.page_as_record/1)
+
     render(conn, :yoga,
-      contact: Application.get_env(:kdd, :yoga_email)
+      contact: Application.get_env(:kdd, :yoga_email), data: data, base_url: ~p"/apps/events/#{app.link}"
     )
   end
 
