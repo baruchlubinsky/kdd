@@ -38,7 +38,7 @@ npm-debug.log
 # secrets
 .env
 
-.iex.env
+.iex.exs
 
 #devops
 fly.toml
