@@ -5,15 +5,21 @@ defmodule KddWeb.Apps.EventsHTML do
 
   attr :record, :map, required: true
   attr :link, :string, required: true
+  attr :media, :string, default: "Poster"
 
   def event_row(assigns) do
     ~H"""
     <div>
-      <a href={@link}>{@record["Name"]} at {raw print_time(@record["Date"])}</a>
+      <.link href={@link}>
+        <h2 class="text-xl">{@record["Name"]}</h2>
+        {raw print_time(@record["Date"])}
+      </.link>
     </div>
-    <div :if={@record["Poster"]} >
-      <%= for image <- @record["Poster"]["files"] do %>
+    <div :if={@media} >
+      <%= for image <- @record[@media]["files"] do %>
+      <.link href={@link}>
       <img src={image["file"]["url"]} alt={image["file"]["name"]} />
+      </.link>
       <% end %>
     </div>
     """

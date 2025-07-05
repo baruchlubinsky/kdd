@@ -1,5 +1,12 @@
+<div class="flex">
+<div class="flex-auto" />
+<div class="flex-auto" >
+<img src={@logo} style="max-height: 240px;" ./>
+</div>
+<div class="flex-auto" />
+</div>
 <.heading><%= @title %></.heading>
 
 <%= for record <- @data do %>
-  <.event_row record={record} link={"#{@base_url}/register/#{record["id"]}"} />
+  <.event_row record={record} link={"#{@base_url}/register/#{record["id"]}"} media="Banner" />
 <% end %>

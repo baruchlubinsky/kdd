@@ -56,7 +56,7 @@ defmodule KddWeb.Apps.EventsController do
       KddNotionEx.Database.query(app.events_db, filter, app.account.access_token)
       |> Enum.map(&KddNotionEx.Transform.page_as_record/1)
 
-    render(conn, :index, title: app.host_name, data: data, base_url: ~p"/apps/events/#{app.link}")
+    render(conn, :index, logo: "/images/events/#{app.link}/logo.png", title: app.host_name, data: data, base_url: ~p"/apps/events/#{app.link}")
   end
 
   def index(conn, _params) do
@@ -72,7 +72,7 @@ defmodule KddWeb.Apps.EventsController do
       KddNotionEx.Page.fetch(event_id, app.account.access_token)
       |> KddNotionEx.Transform.page_as_record()
 
-    render(conn, :register, link: link, record: event, form: %{})
+    render(conn, :register, title: app.host_name, link: link, record: event, form: %{})
   end
 
   def signup(conn, %{"link" => link, "event_id" => event_id} = params) do
