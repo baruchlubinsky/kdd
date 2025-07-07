@@ -4,7 +4,7 @@ defmodule KddWeb.Apps.EventsController do
 
   alias KddNotionEx.Templates
 
-  plug :load_user!, only: [:settings, :configure]
+  plug :load_user! when action in [:settings, :configure]
 
   def settings(conn, _params) do
     user = conn.assigns[:user]
