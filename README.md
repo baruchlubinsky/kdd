@@ -17,6 +17,16 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
   * Forum: https://elixirforum.com/c/phoenix-forum
   * Source: https://github.com/phoenixframework/phoenix
 
+# Local database using Podman 
+
+`sudo apt install podman` 
+
+`podman pull docker.io/library/postgres:latest` 
+
+`podman tag docker.io/library/postgres:latest postgres:latest`
+
+`mix podman.db`
+
 # Testing the Notion API locally
 
 `Kdd.Notion.Account` 
