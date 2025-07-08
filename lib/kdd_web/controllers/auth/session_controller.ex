@@ -28,7 +28,7 @@ defmodule KddWeb.Auth.SessionController do
 
         if is_nil(user.notion_account) do
           put_flash(conn, :info, "Connect your Notion account to continue.")
-          |> redirect(to: ~p"/notion")
+          |> redirect(to: ~p"/apps")
           |> halt()
         end
 
@@ -36,14 +36,14 @@ defmodule KddWeb.Auth.SessionController do
       end
     else
       put_flash(conn, :error, "Must be logged in.")
-      |> redirect(to: ~p"/notion")
+      |> redirect(to: ~p"/apps")
       |> halt()
     end
   end
 
   def logout(conn, _params) do
     delete_resp_cookie(conn, "kdd_session")
-    |> redirect(to: ~p"/notion")
+    |> redirect(to: ~p"/apps")
   end
 
   def new_token(user) do
@@ -66,6 +66,6 @@ defmodule KddWeb.Auth.SessionController do
 
     # Remember me for 30 days
     put_resp_cookie(conn, "kdd_session", token, sign: true, max_age: 30 * 24 * 60 * 60)
-    |> redirect(to: ~p"/notion")
+    |> redirect(to: ~p"/apps")
   end
 end

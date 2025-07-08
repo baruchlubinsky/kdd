@@ -24,6 +24,7 @@ defmodule Kdd.Notion.Account do
 
   def dev_account(secret) do
     user = %Kdd.Kdd.User{} |> Kdd.Repo.insert!()
-    %Kdd.Notion.Account{user: user, access_token: secret, bot_id: "Dev bot"} |> Kdd.Repo.insert()
+    %Kdd.Notion.Account{user: user, access_token: secret, bot_id: "Dev bot", workspace_name: "Local dev"}
+    |> Kdd.Repo.insert()
   end
 end

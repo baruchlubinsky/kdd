@@ -46,12 +46,20 @@ defmodule KddWeb.PageController do
   end
 
   def consult(conn, _params) do
+    email = Application.get_env(:kdd, :consulting_email)
+    render(conn, :consult, contact: email)
+  end
+
+  def apps(conn, _params) do
     session_token = conn.assigns[:kdd_token]
+    email = Application.get_env(:kdd, :consulting_email)
+    url = Kdd.Notion.Config.auth_url()
 
     if !session_token do
-      render(conn, :consult,
-        contact: Application.get_env(:kdd, :consulting_email),
-        integration: Kdd.Notion.Config.auth_url()
+      render(conn, :apps,
+        contact: email,
+        integration: url,
+        workspace_name: false
       )
     else
       session =
@@ -61,16 +69,19 @@ defmodule KddWeb.PageController do
       user = Kdd.Repo.preload(session.user, :notion_account)
 
       if is_nil(user.notion_account) do
-        render(conn, :consult,
-          contact: Application.get_env(:kdd, :consulting_email),
-          integration: Kdd.Notion.Config.auth_url()
+        render(conn, :apps,
+          contact: email,
+          integration: url,
+          workspace_name: false
         )
       else
-        render(conn, :notion_logged_in,
-          contact: Application.get_env(:kdd, :consulting_email),
+        render(conn, :apps,
+          contact: email,
+          integration: url,
           workspace_name: user.notion_account.workspace_name
         )
       end
     end
   end
+
 end

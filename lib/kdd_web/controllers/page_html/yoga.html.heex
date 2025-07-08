@@ -1,11 +1,7 @@
-<div class="flex">
-    <div class="w-16 flex-auto"></div>
-    <div class="w-60 flex-none">
+<.center>
         <img src={~p"/images/mwm-logo-grey.png"} />
-    </div>
-    <div class="w-16 flex-auto"></div>
-</div>
-<h1 class="text-2xl text-align-centre font-semibold">Yoga Bio</h1>
+</.center>
+<.heading>Yoga Bio</.heading>
 <p>
     I first started in practising yoga in 2012. It has tranformed my life. Revolutionising my relationship with body, mind and spirit.
 </p>
@@ -26,7 +22,7 @@
 <p>
     <span class="font-semibold">Contact:</span><a href={"mailto:#{@contact}"}>{@contact}</a>
 </p>
-<h1 class="text-2xl text-align-centre font-semibold">Upcoming classes</h1>
+<.heading>Upcoming classes</.heading>
 <%= for record <- @data do %>
   <.event_row record={record} link={"#{@base_url}/register/#{record["id"]}"} media="Banner" />
 <% end %>
