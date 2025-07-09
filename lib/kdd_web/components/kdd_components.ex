@@ -45,4 +45,26 @@ defmodule KddWeb.KddComponents do
     """
   end
 
+  attr :href, :string, required: true
+  attr :target, :string, default: "."
+  slot :inner_block
+  def hlink(assigns) do
+    ~H"""
+    <.link class="hover:underline" href={@href} target={@target}>
+      <%= render_slot @inner_block %>
+    </.link>
+    """
+  end
+
+  slot :inner_block
+  def cta(assigns) do
+    ~H"""
+    <p>
+    <button class="bg-gray-600 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded-full">
+      <%= render_slot @inner_block %>
+    </button>
+    </p>
+    """
+  end
+
 end
