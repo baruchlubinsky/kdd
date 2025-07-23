@@ -40,6 +40,10 @@ defmodule KddWeb.Apps.EventsHTML do
     """
   end
 
+  def print_time({st, et}) when is_nil(et) do
+    print_time(st)
+  end
+
   def print_time({st, et}) do
     "<span class=\"kdd_timestamp\" >#{st}</span> to <span class=\"kdd_timestamp\" >#{et}</span>"
   end

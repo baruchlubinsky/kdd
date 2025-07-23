@@ -33,7 +33,11 @@ defmodule KddWeb.PageController do
           }
         }
         ]
-      }
+      },
+      sorts: [%{
+        "property" => "Date",
+        "direction" => "ascending"
+      }]
     }
 
     data =
