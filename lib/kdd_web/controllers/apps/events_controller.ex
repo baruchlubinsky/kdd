@@ -53,7 +53,8 @@ defmodule KddWeb.Apps.EventsController do
     }
 
     data =
-      KddNotionEx.Database.query(app.events_db, filter, app.account.access_token)
+      KddNotionEx.Client.new(app.account.access_token)
+      |> KddNotionEx.Database.query(app.events_db, filter)
       |> Enum.map(&KddNotionEx.Transform.page_as_record/1)
 
     render(conn, :index, logo: "/images/events/#{app.link}/logo.png", title: app.host_name, data: data, base_url: ~p"/apps/events/#{app.link}")
@@ -69,7 +70,8 @@ defmodule KddWeb.Apps.EventsController do
     app = Kdd.Repo.get_by!(Kdd.Apps.Events, link: link) |> Kdd.Repo.preload(:account)
 
     event =
-      KddNotionEx.Page.fetch(event_id, app.account.access_token)
+      KddNotionEx.Client.new(app.account.access_token)
+      |> KddNotionEx.Page.fetch(event_id)
       |> KddNotionEx.Transform.page_as_record()
 
     render(conn, :register, title: app.host_name, link: link, record: event, form: %{})
@@ -77,13 +79,16 @@ defmodule KddWeb.Apps.EventsController do
 
   def signup(conn, %{"link" => link, "event_id" => event_id} = params) do
     app = Kdd.Repo.get_by!(Kdd.Apps.Events, link: link) |> Kdd.Repo.preload(:account)
+    req = KddNotionEx.Client.new(app.account.access_token)
 
-    %{"id" => signup_id} =
+    properties =
       Templates.new_page("Name", params["name"])
       |> Templates.add_property(Templates.relation_prop(app.events_name, app.events_db, event_id))
       |> Templates.add_property(Templates.phone_number_prop("Phone number", params["phone"]))
-      |> KddNotionEx.Page.create_record(app.signups_db, app.account.access_token)
-      |> KddNotionEx.Api.read_body()
+
+    signup_id =
+      KddNotionEx.Page.create_record(req, properties, app.signups_db)
+      |> KddNotionEx.Client.response("id")
 
     render(conn, :success, link: ~p"/apps/events/#{link}/signup/#{signup_id}")
   end
@@ -92,7 +97,8 @@ defmodule KddWeb.Apps.EventsController do
     app = Kdd.Repo.get_by!(Kdd.Apps.Events, link: link) |> Kdd.Repo.preload(:account)
 
     signup =
-      KddNotionEx.Page.fetch(signup_id, app.account.access_token)
+      KddNotionEx.Client.new(app.account.access_token)
+      |> KddNotionEx.Page.fetch(signup_id)
       |> KddNotionEx.Transform.page_as_record()
 
     render(conn, :signup, signup: signup)
@@ -103,7 +109,8 @@ defmodule KddWeb.Apps.EventsController do
 
     cancel = KddNotionEx.Templates.checkbox_prop("Cancelled", true)
 
-    KddNotionEx.Page.update(cancel, signup_id, app.account.access_token)
+    KddNotionEx.Client.new(app.account.access_token)
+    |> KddNotionEx.Page.update(cancel, signup_id)
 
     redirect(conn, to: ~p"/apps/events/#{link}/signup/#{signup_id}")
   end

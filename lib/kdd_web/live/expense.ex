@@ -53,11 +53,14 @@ defmodule KddWeb.LiveExpense do
       put_flash(socket, :warn, "App is not configured.")
       |> push_navigate(to: ~p"/apps/budget/settings")
     else
+      properties =
       Templates.new_page("Name", name)
       |> Templates.add_property(Templates.number_prop("Amount", amount))
       |> Templates.add_property(Templates.relation_prop("Category", app.budget_db, category))
       |> Templates.add_property(Templates.datestamp("Date"))
-      |> KddNotionEx.Page.create_record(app.expense_db, account.access_token)
+
+      KddNotionEx.Client.new(account.access_token)
+      |> KddNotionEx.Page.create_record(properties, app.expense_db)
 
       put_flash(socket, :info, "Saved.")
     end
@@ -69,7 +72,8 @@ defmodule KddWeb.LiveExpense do
     app = Kdd.Repo.one!(from(Kdd.Apps.Budget, where: [account_id: ^account.id]))
 
     category_options =
-      KddNotionEx.Database.query(app.budget_db, nil, account.access_token)
+      KddNotionEx.Client.new(account.access_token)
+      |> KddNotionEx.Database.query(app.budget_db, nil)
       |> KddNotionEx.Transform.table_to_options("Category")
 
     {:noreply, assign(socket, categories: category_options)}

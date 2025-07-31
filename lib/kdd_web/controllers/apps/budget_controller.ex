@@ -51,16 +51,20 @@ defmodule KddWeb.Apps.BudgetController do
   def record_expense(conn, %{"name" => name, "amount" => amount, "category" => category}) do
     user = conn.assigns[:user]
     app = Kdd.Repo.one(from(Kdd.Apps.Budget, where: [account_id: ^user.notion_account.id]))
+    req = KddNotionEx.Client.new(user.notion_account.access_token)
 
     if is_nil(app) do
       put_flash(conn, :warn, "App is not configured.")
       |> redirect(to: ~p"/apps/budget/settings")
     else
+      properties =
       Templates.new_page("Name", name)
       |> Templates.add_property(Templates.number_prop("Amount", amount))
       |> Templates.add_property(Templates.relation_prop("Category", app.budget_db, category))
       |> Templates.add_property(Templates.datestamp("Date"))
-      |> KddNotionEx.Page.create_record(app.expense_db, user.notion_account.access_token)
+
+
+      KddNotionEx.Page.create_record(req, properties, app.expense_db)
 
       redirect(conn, to: ~p"/apps/budget/expense")
     end
@@ -143,12 +147,15 @@ defmodule KddWeb.Apps.BudgetController do
       }
 
     expense_data =
-      KddNotionEx.Database.query(expenses, exp_filter, token)
+      KddNotionEx.Client.new(token)
+      |> KddNotionEx.Database.query(expenses, exp_filter)
       |> KddNotionEx.Transform.pivot_table("Amount", "Category")
       |> Enum.filter(fn {k, _v} -> is_binary(k) end)
       |> Enum.map(fn {k, v} -> {k, Enum.sum(v)} end)
 
-    category_resp = KddNotionEx.Database.query(categories, cat_filter, token)
+    category_resp =
+      KddNotionEx.Client.new(token)
+      |> KddNotionEx.Database.query(categories, cat_filter)
 
     category_data = KddNotionEx.Transform.pivot_table(category_resp, "Amount", "Category")
 
