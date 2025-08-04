@@ -57,6 +57,24 @@ defmodule KddWeb.KddComponents do
   end
 
   slot :inner_block
+  def paragraph(assigns) do
+    ~H"""
+    <p>
+      <%= render_slot @inner_block %>
+    </p>
+    """
+  end
+
+  slot :inner_block
+  def span(assigns) do
+    ~H"""
+    <span>
+      <%= render_slot @inner_block %>
+    </span>
+    """
+  end
+
+  slot :inner_block
   def cta(assigns) do
     ~H"""
     <p>

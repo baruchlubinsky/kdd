@@ -44,13 +44,12 @@ defmodule Kdd.MixProject do
       {:esbuild, "~> 0.10", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.1.8", runtime: Mix.env() == :dev},
       {:swoosh, "~> 1.19.3"},
-      {:finch, "~> 0.19.0"},
       {:telemetry_metrics, "~> 1.1.0"},
       {:telemetry_poller, "~> 1.2.0"},
       {:gettext, "~> 0.26.2"},
       {:jason, "~> 1.4.4"},
       {:plug_cowboy, "~> 2.7.4"},
-      #{:kdd_notion_ex, git: "https://github.com/baruchlubinsky/kdd_notion_ex.git", tag: "0.1.9"}
+      #{:kdd_notion_ex, git: "https://github.com/baruchlubinsky/kdd_notion_ex.git", tag: "0.2.1"}
       {:kdd_notion_ex, path: "../kdd_notion_ex"}
     ]
   end

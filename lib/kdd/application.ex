@@ -14,10 +14,6 @@ defmodule Kdd.Application do
       Kdd.Repo,
       # Start the PubSub system
       {Phoenix.PubSub, name: Kdd.PubSub},
-      # Start Finch
-      {Finch, name: Kdd.Finch},
-      # Notion API Client
-      KddNotionEx,
       # Start the Endpoint (http/https)
       KddWeb.Endpoint
       # Start a worker by calling: Kdd.Worker.start_link(arg)

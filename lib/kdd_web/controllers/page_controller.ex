@@ -45,8 +45,13 @@ defmodule KddWeb.PageController do
     |> KddNotionEx.Database.query(app.events_db, filter)
     |> Enum.map(&KddNotionEx.Transform.page_as_record/1)
 
+    bio =
+    KddNotionEx.Client.new(token)
+    |> KddNotionEx.Page.fetch_content(page_id)
+    |> KddNotionEx.Page.elements()
+
     render(conn, :yoga,
-      contact: Application.get_env(:kdd, :yoga_email), data: data, base_url: ~p"/apps/events/#{app.link}"
+      contact: Application.get_env(:kdd, :yoga_email), bio: bio, data: data, base_url: ~p"/apps/events/#{app.link}"
     )
   end
 

@@ -49,16 +49,12 @@ defmodule KddWeb.Auth.NotionController do
     basic_auth = Kdd.Notion.Config.client_id() <> ":" <> Kdd.Notion.Config.client_secret()
     body = oauth_token_params(code, redirect)
 
-    headers = [
-      {"Authorization", "Basic " <> Base.encode64(basic_auth)},
-      {"Content-Type", "application/json"}
-    ]
-
-    Finch.build(:post, "https://api.notion.com/v1/oauth/token", headers, Jason.encode!(body))
-    |> KddNotionEx.Api.request!
+    KddNotionEx.Client.new()
+    |> Req.Request.merge_options(auth: {:basic, Base.encode64(basic_auth)})
+    |> Req.post!(url: "/oauth/token", json: body)
     |> case do
-      %Finch.Response{status: 200, body: body} -> {:ok, Jason.decode!(body)}
-      %Finch.Response{body: body} -> {:error, Jason.decode!(body)}
+      %Req.Response{status: 200, body: body} -> {:ok, Jason.decode!(body)}
+      %Req.Response{body: body} -> {:error, Jason.decode!(body)}
     end
   end
 

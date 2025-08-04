@@ -1,27 +1,7 @@
 <.center>
         <img class="max-h-60" src={~p"/images/mwm-logo-grey.png"} />
 </.center>
-<.heading>Yoga Bio</.heading>
-<p>
-    I first started in practising yoga in 2012. It has tranformed my life. Revolutionising my relationship with body, mind and spirit.
-</p>
-<p>
-    In 2024 I achieved a long-time dream by completing a Teacher Training Course with <a class="underline" href="https://kangastudio.co/nairobi/">Kanga Studio</a> in Nairobi. 
-    The course includes teaching from the classical Ashtanga, Shivananda and Iyengar schools.
-    We also studied Vedic philosphy and Ayurveda, emphasising the spiritual nature of yoga and the importance of tailoring the practice to the individual.
-</p>
-<p>
-    "Yoga" mean to unite. The goal of my practice and my teaching is to foster harmony in the individual.
-    Creating a unity of body, mind and spirit with the Self.
-    Any mindful practice may be understood as yoga, if it is bringing one closer to that unity.
-    Indeed the moving, Asana, practice that most people identify as yoga, is just one of the eight limbs of yoga described in the classical texts.
-</p>
-<p>
-    I offer Hatha Yoga classes, guided meditation, and workshops.
-</p>
-<p>
-    <span class="font-semibold">Contact:</span><a href={"mailto:#{@contact}"}>{@contact}</a>
-</p>
+<.render_element element={@bio} />
 <.heading>Upcoming classes</.heading>
 <%= for record <- @data do %>
   <.event_row record={record} link={"#{@base_url}/register/#{record["id"]}"} media="Banner" />
