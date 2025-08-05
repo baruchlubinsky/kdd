@@ -73,11 +73,12 @@ defmodule KddWeb.CMSComponents do
     """
   end
 
-  def render_element(%{element: {:image, url}} = assigns) do
+  def render_element(%{element: {:image, url, alt}} = assigns) do
     assigns = assign(assigns, :url, url)
+    assigns = assign(assigns, :alt, alt)
 
     ~H"""
-    <.image url={@url} />
+    <.image url={@url} alt={@alt} />
     """
   end
 
@@ -145,9 +146,10 @@ defmodule KddWeb.CMSComponents do
   end
 
   attr :url, :string, required: true
+  attr :alt, :string, default: ""
   def image(assigns) do
     ~H"""
-    <img src={@url} />
+    <img src={@url} alt={@alt} />
     """
   end
 

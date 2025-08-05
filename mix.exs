@@ -19,7 +19,7 @@ defmodule Kdd.MixProject do
   def application do
     [
       mod: {Kdd.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :kdd_notion_ex]
     ]
   end
 
