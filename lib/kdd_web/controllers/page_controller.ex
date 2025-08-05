@@ -46,7 +46,7 @@ defmodule KddWeb.PageController do
     |> Enum.map(&KddNotionEx.Transform.page_as_record/1)
 
     bio =
-    KddNotionEx.Client.new("secret_fltyPakpVYygTLjT6fru9hAGnrafXWjJ1ZRSd8psMU4")
+    KddNotionEx.Client.new(Application.get_env(:kdd_notion_ex, :cms_key))
     |> KddNotionEx.Page.fetch_content("24427dcec749804baca0feb49d6a5bb9")
     |> KddNotionEx.Page.elements()
 
