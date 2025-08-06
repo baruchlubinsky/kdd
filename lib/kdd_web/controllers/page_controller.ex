@@ -2,16 +2,41 @@ defmodule KddWeb.PageController do
   use KddWeb, :controller
   import Ecto.Query
 
-  def home(conn, _params) do
-    render(conn, :home)
+  def cms_map() do
+    [
+      {"/", "24727dcec7498023af20e880ea978872"},
+      {"/yoga", "24427dcec749804baca0feb49d6a5bb9"},
+      {"/consult", "24727dcec7498008b400f287f2106d3b"},
+      {"/kdd", "24727dcec7498058bc90ff3898e90725"},
+      {"/about", "24727dcec7498021a9f8e71f02582292"}
+    ]
   end
 
-  def about(conn, _params) do
-    render(conn, :about)
+  def cms_id(path) do
+    {_, id} =
+    Enum.find(cms_map(), fn {route, _id} ->
+      route == path
+    end)
+    id
   end
 
-  def kdd(conn, _params) do
-    render(conn, :kdd)
+  def cms_path(id) do
+    {route, _id} =
+    Enum.find(cms_map(), {id, nil},
+    fn {_route, page_id} ->
+      "/#{page_id}" == id
+    end
+    )
+    route
+  end
+
+  def cms(conn, _params) do
+    page =
+    KddNotionEx.Client.new(Application.get_env(:kdd_notion_ex, :cms_key))
+    |> KddNotionEx.Page.fetch_content(cms_id(conn.request_path))
+    |> KddNotionEx.Page.elements(paths: &cms_path/1)
+
+    render(conn, :cms, page: page)
   end
 
   def yoga(conn, _params) do
@@ -47,17 +72,12 @@ defmodule KddWeb.PageController do
 
     bio =
     KddNotionEx.Client.new(Application.get_env(:kdd_notion_ex, :cms_key))
-    |> KddNotionEx.Page.fetch_content("24427dcec749804baca0feb49d6a5bb9")
-    |> KddNotionEx.Page.elements()
+    |> KddNotionEx.Page.fetch_content(cms_id("/yoga"))
+    |> KddNotionEx.Page.elements(paths: &cms_path/1)
 
     render(conn, :yoga,
       contact: Application.get_env(:kdd, :yoga_email), bio: bio, data: data, base_url: ~p"/apps/events/#{app.link}"
     )
-  end
-
-  def consult(conn, _params) do
-    email = Application.get_env(:kdd, :consulting_email)
-    render(conn, :consult, contact: email)
   end
 
   def apps(conn, _params) do
@@ -92,6 +112,10 @@ defmodule KddWeb.PageController do
         )
       end
     end
+  end
+
+  def notion(conn, _) do
+    redirect(conn, to: "/consult")
   end
 
 end

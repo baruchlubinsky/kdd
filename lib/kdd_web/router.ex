@@ -22,13 +22,14 @@ defmodule KddWeb.Router do
   scope "/", KddWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
-    get "/about", PageController, :about
-    get "/kdd", PageController, :kdd
-    get "/notion", PageController, :consult
-    get "/consult", PageController, :consult
+    get "/", PageController, :cms
+    get "/about", PageController, :cms
+    get "/kdd", PageController, :cms
+    get "/consult", PageController, :cms
     get "/apps", PageController, :apps
     get "/yoga", PageController, :yoga
+
+    get "/notion", PageController, :notion
 
   end
 

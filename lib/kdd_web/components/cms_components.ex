@@ -62,6 +62,15 @@ defmodule KddWeb.CMSComponents do
     """
   end
 
+  def render_element(%{element: {:cta, content}} = assigns) do
+    assigns = assign(assigns, :content, content)
+    ~H"""
+    <.cta>
+      <.render_element element={@content} />
+    </.cta>
+    """
+  end
+
   def render_element(%{element: {:a, href, content}} = assigns) do
     assigns = assign(assigns, :content, content)
     assigns = assign(assigns, :href, href)
@@ -79,6 +88,16 @@ defmodule KddWeb.CMSComponents do
 
     ~H"""
     <.image url={@url} alt={@alt} />
+    """
+  end
+
+  def render_element(%{element: {:li, content}} = assigns) do
+    assigns = assign(assigns, :content, content)
+
+    ~H"""
+    <li class="ml-4">
+      <.render_element element={@content} />
+    </li>
     """
   end
 
