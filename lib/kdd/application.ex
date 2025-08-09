@@ -15,9 +15,10 @@ defmodule Kdd.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Kdd.PubSub},
       # Start the Endpoint (http/https)
-      KddWeb.Endpoint
+      KddWeb.Endpoint,
       # Start a worker by calling: Kdd.Worker.start_link(arg)
       # {Kdd.Worker, arg}
+      {Cachex, [:kdd]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

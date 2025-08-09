@@ -49,6 +49,7 @@ defmodule Kdd.MixProject do
       {:gettext, "~> 0.26.2"},
       {:jason, "~> 1.4.4"},
       {:plug_cowboy, "~> 2.7.4"},
+      {:cachex, "~> 4.0"},
       {:kdd_notion_ex, git: "https://github.com/baruchlubinsky/kdd_notion_ex.git", tag: "0.2.3"}
       #{:kdd_notion_ex, path: "../kdd_notion_ex"}
     ]

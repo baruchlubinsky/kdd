@@ -39,7 +39,7 @@ defmodule KddWeb.Apps.EventsController do
         %{
           "property" => "Date",
           "date" =>%{
-            "on_or_after" => Date.to_iso8601(Date.utc_today())
+            "on_or_after" => NaiveDateTime.to_iso8601(NaiveDateTime.utc_now())
           }
         },
         %{
@@ -73,6 +73,7 @@ defmodule KddWeb.Apps.EventsController do
       KddNotionEx.Client.new(app.account.access_token)
       |> KddNotionEx.Page.fetch(event_id)
       |> KddNotionEx.Transform.page_as_record()
+      |> IO.inspect()
 
     render(conn, :register, title: app.host_name, link: link, record: event, form: %{})
   end

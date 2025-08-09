@@ -50,11 +50,11 @@ defmodule KddWeb.Auth.NotionController do
     body = oauth_token_params(code, redirect)
 
     KddNotionEx.Client.new()
-    |> Req.Request.merge_options(auth: {:basic, Base.encode64(basic_auth)})
+    |> Req.Request.merge_options(auth: {:basic, basic_auth})
     |> Req.post!(url: "/oauth/token", json: body)
     |> case do
-      %Req.Response{status: 200, body: body} -> {:ok, Jason.decode!(body)}
-      %Req.Response{body: body} -> {:error, Jason.decode!(body)}
+      %Req.Response{status: 200, body: body} -> {:ok, body}
+      %Req.Response{body: body} -> {:error, body}
     end
   end
 

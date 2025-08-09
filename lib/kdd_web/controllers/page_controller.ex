@@ -3,18 +3,31 @@ defmodule KddWeb.PageController do
   import Ecto.Query
 
   def cms_map() do
+    Cachex.fetch!(:kdd, :cms_map, fn _ ->
+      KddNotionEx.Client.new(Application.get_env(:kdd_notion_ex, :cms_key))
+      # Query the CMS "db"
+    end)
     [
       {"/", "24727dcec7498023af20e880ea978872"},
       {"/yoga", "24427dcec749804baca0feb49d6a5bb9"},
       {"/consult", "24727dcec7498008b400f287f2106d3b"},
+      {"/consult/cms", "24727dcec74980649868e01cc5bc98c3"},
       {"/kdd", "24727dcec7498058bc90ff3898e90725"},
       {"/about", "24727dcec7498021a9f8e71f02582292"}
     ]
   end
 
+  def check_route(conn, _params) do
+    id = cms_id(conn.request_path)
+
+    if is_nil(id), do: raise Phoenix.Router.NoRouteError
+
+    conn
+  end
+
   def cms_id(path) do
     {_, id} =
-    Enum.find(cms_map(), fn {route, _id} ->
+    Enum.find(cms_map(), {nil, nil}, fn {route, _id} ->
       route == path
     end)
     id
@@ -30,10 +43,15 @@ defmodule KddWeb.PageController do
     route
   end
 
-  def cms(conn, _params) do
+  def cms(conn, %{"cms_path" => path}) do
+    IO.inspect(path)
+    id = cms_id("/#{Enum.join(path, "/")}")
+
+    if is_nil(id), do: raise(Phoenix.Router.NoRouteError, conn: conn)
+
     page =
     KddNotionEx.Client.new(Application.get_env(:kdd_notion_ex, :cms_key))
-    |> KddNotionEx.Page.fetch_content(cms_id(conn.request_path))
+    |> KddNotionEx.Page.fetch_content(id)
     |> KddNotionEx.Page.elements(paths: &cms_path/1)
 
     render(conn, :cms, page: page)

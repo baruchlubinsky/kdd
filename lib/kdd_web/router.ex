@@ -2,6 +2,7 @@ defmodule KddWeb.Router do
   use KddWeb, :router
 
   import KddWeb.Auth.SessionController
+  import KddWeb.PageController, only: [check_route: 2]
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -19,13 +20,13 @@ defmodule KddWeb.Router do
     plug :get_kdd_session
   end
 
+  pipeline :cms do
+    plug :check_route
+  end
+
   scope "/", KddWeb do
     pipe_through :browser
 
-    get "/", PageController, :cms
-    get "/about", PageController, :cms
-    get "/kdd", PageController, :cms
-    get "/consult", PageController, :cms
     get "/apps", PageController, :apps
     get "/yoga", PageController, :yoga
 
@@ -79,6 +80,13 @@ defmodule KddWeb.Router do
     pipe_through :api
 
     get "/apps/budget/month_to_date", Apps.BudgetController, :month_to_date
+  end
+
+  scope "/", KddWeb do
+    pipe_through :browser
+
+    get "/*cms_path", PageController, :cms
+
   end
 
   # Other scopes may use custom stacks.
