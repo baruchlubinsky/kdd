@@ -46,7 +46,7 @@ config :kdd, :notion,
 
 config :kdd_notion_ex, :cms_key, System.get_env("NOTION_CMS_KEY")
 
-config :kdd_notion_ex, :cms_db, System.get_env("NOTION_CMS_DB")
+config :kdd, :cms_db, System.get_env("NOTION_CMS_DB")
 
 
 if config_env() == :prod do

@@ -37,11 +37,11 @@ defmodule KddWeb.Auth.NotionController do
 
         # Remember me for 30 days
         put_resp_cookie(conn, "kdd_session", token, sign: true, max_age: 30 * 24 * 60 * 60)
-        |> redirect(to: ~p"/notion")
+        |> redirect(to: ~p"/apps")
 
       {:error, data} ->
         put_flash(conn, :error, data)
-        |> redirect(to: ~p"/notion")
+        |> redirect(to: ~p"/apps")
     end
   end
 

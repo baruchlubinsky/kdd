@@ -3,26 +3,44 @@ defmodule KddWeb.PageController do
   import Ecto.Query
 
   def cms_map() do
+    cms_db = Application.get_env(:kdd, :cms_db)
+    req = KddNotionEx.Client.new(Application.get_env(:kdd_notion_ex, :cms_key))
+    # [:ok, :ok, :ok] = KddNotionEx.CMS.Config.validate_notion_db(req, cms_db)
+
     Cachex.fetch!(:kdd, :cms_map, fn _ ->
-      KddNotionEx.Client.new(Application.get_env(:kdd_notion_ex, :cms_key))
-      # Query the CMS "db"
-    end)
-    [
-      {"/", "24727dcec7498023af20e880ea978872"},
-      {"/yoga", "24427dcec749804baca0feb49d6a5bb9"},
-      {"/consult", "24727dcec7498008b400f287f2106d3b"},
-      {"/consult/cms", "24727dcec74980649868e01cc5bc98c3"},
-      {"/kdd", "24727dcec7498058bc90ff3898e90725"},
-      {"/about", "24727dcec7498021a9f8e71f02582292"}
-    ]
+      filter = %{
+        filter:
+          %{
+            "property" => "Published",
+            "checkbox" => %{
+              "equals" => true
+            }
+          },
+        sorts: [%{
+          "property" => "Page URL",
+          "direction" => "ascending"
+        }]
+      }
+      KddNotionEx.Database.query(req, cms_db, filter)
+      |> Enum.map(&KddNotionEx.Transform.page_as_record/1)
+      |> Enum.map(fn page ->
+        {page["Page URL"]["url"], page["id"]}
+      end)
+    end
+
+    )
+
   end
 
   def check_route(conn, _params) do
     id = cms_id(conn.request_path)
 
-    if is_nil(id), do: raise Phoenix.Router.NoRouteError
-
-    conn
+    if is_nil(id) do
+      put_status(conn, 404)
+      |> halt()
+    else
+      conn
+    end
   end
 
   def cms_id(path) do

@@ -30,8 +30,6 @@ defmodule KddWeb.Router do
     get "/apps", PageController, :apps
     get "/yoga", PageController, :yoga
 
-    get "/notion", PageController, :notion
-
   end
 
   scope "/auth", KddWeb.Auth do
@@ -82,12 +80,7 @@ defmodule KddWeb.Router do
     get "/apps/budget/month_to_date", Apps.BudgetController, :month_to_date
   end
 
-  scope "/", KddWeb do
-    pipe_through :browser
 
-    get "/*cms_path", PageController, :cms
-
-  end
 
   # Other scopes may use custom stacks.
   # scope "/api", KddWeb do
@@ -112,4 +105,13 @@ defmodule KddWeb.Router do
       get "/token", KddWeb.Auth.SessionController, :dev_token
     end
   end
+
+  scope "/", KddWeb do
+    pipe_through :browser
+
+    get "/*cms_path", PageController, :cms
+
+  end
+
+
 end
