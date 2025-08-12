@@ -3,6 +3,8 @@ defmodule KddWeb.Router do
 
   import KddWeb.Auth.SessionController
   import KddWeb.PageController, only: [check_route: 2]
+  import KddWeb.WebhookController, only: [check_secret: 2]
+
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -24,12 +26,23 @@ defmodule KddWeb.Router do
     plug :check_route
   end
 
+  pipeline :webhook do
+    plug :check_secret
+    plug :accepts, ["json", "html"]
+  end
+
   scope "/", KddWeb do
     pipe_through :browser
 
     get "/apps", PageController, :apps
     get "/yoga", PageController, :yoga
 
+  end
+
+  scope "/incoming/notion", KddWeb do
+    pipe_through :webhook
+
+    post "/cms", WebhookController, :update_cms
   end
 
   scope "/auth", KddWeb.Auth do

@@ -24,7 +24,7 @@ defmodule KddWeb.PageController do
       KddNotionEx.Database.query(req, cms_db, filter)
       |> Enum.map(&KddNotionEx.Transform.page_as_record/1)
       |> Enum.map(fn page ->
-        {page["Page URL"]["url"], page["id"]}
+        {page["Page URL"]["url"], page["ID"]["string"]}
       end)
     end
 
@@ -65,7 +65,7 @@ defmodule KddWeb.PageController do
     IO.inspect(path)
     id = cms_id("/#{Enum.join(path, "/")}")
 
-    if is_nil(id), do: raise(Phoenix.Router.NoRouteError, conn: conn)
+    if is_nil(id), do: raise(Phoenix.Router.NoRouteError, conn: conn, router: KddWeb.Router)
 
     page =
     KddNotionEx.Client.new(Application.get_env(:kdd_notion_ex, :cms_key))

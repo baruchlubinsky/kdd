@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <title>{assigns[:page_title] || "Karma Driven Development"}</title>
+    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
+    <link rel="manifest" href={~p"/images/site.webmanifest"} />
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
+    </script>
+  </head>
+  <body>
+    <header>
+      <nav class="flex items-center justify-between flex-wrap bg-black lg:shadow-xl sm:shadow text-white p-6">
+        <div class="flex items-center flex-shrink-0 mr-6">
+          <a href="/" class="flex items-center py-4 px-2">
+            <img
+              src={~p"/images/kdd-logo-inverse.png"}
+              alt="KDD Logo"
+              class="h-8 w-8 mr-2"
+            />
+          </a>
+        </div>
+        <div class="w-full block flex-grow hidden lg:flex lg:items-center lg:w-auto">
+          <div class="text-sm lg:flex-grow">
+            <a
+              href={~p"/"}
+              class="block mt-4 lg:inline-block text-lg font-semibold lg:mt-0 hover:underline mr-4"
+            >
+              Home
+            </a>
+          </div>
+        </div>
+        <div class="inline-block items-center">
+          
+        </div>
+      </nav>
+    </header>
+    <main class="px-4 py-20 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-2xl space-y-3">
+        <.heading>Error</.heading>
+        <p>
+            404
+        </p>
+        <p>
+            Not found.
+        </p>
+      </div>
+    </main>
+  </body>
+</html>

@@ -48,6 +48,7 @@ config :kdd_notion_ex, :cms_key, System.get_env("NOTION_CMS_KEY")
 
 config :kdd, :cms_db, System.get_env("NOTION_CMS_DB")
 
+config :kdd, :notion_webhook_secret, System.get_env("NOTION_WEBHOOK_SECRET")
 
 if config_env() == :prod do
   database_url =
