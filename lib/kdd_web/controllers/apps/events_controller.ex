@@ -73,7 +73,6 @@ defmodule KddWeb.Apps.EventsController do
       KddNotionEx.Client.new(app.account.access_token)
       |> KddNotionEx.Page.fetch(event_id)
       |> KddNotionEx.Transform.page_as_record()
-      |> IO.inspect()
 
     render(conn, :register, title: app.host_name, link: link, record: event, form: %{})
   end

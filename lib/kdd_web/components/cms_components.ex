@@ -102,8 +102,7 @@ defmodule KddWeb.CMSComponents do
   end
 
   def render_element(assigns) do
-    IO.inspect(assigns)
-    ~H""
+    ~H"<!-- Unknown element -->"
   end
 
   slot :inner_block
