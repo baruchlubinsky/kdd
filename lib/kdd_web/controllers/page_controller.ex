@@ -1,35 +1,57 @@
 defmodule KddWeb.PageController do
+  require Logger
   use KddWeb, :controller
   import Ecto.Query
 
+  def download_routes() do
+    cms_db = Application.fetch_env!(:kdd, :cms_db)
+    req = KddNotionEx.Client.new(Application.fetch_env!(:kdd_notion_ex, :cms_key))
+    filter = %{
+      filter:
+        %{
+          "property" => "Published",
+          "checkbox" => %{
+            "equals" => true
+          }
+        },
+      sorts: [%{
+
+        "property" => "Page URL",
+        "direction" => "ascending"
+      }]
+    }
+
+    Req.post(req, url: "/databases/#{cms_db}/query", json: filter)
+    |> case do
+      {:ok, %Req.Response{status: 200, body: response}} ->
+        if response["has_more"] do
+            query = filter
+              |> Map.put("start_cursor", response["next_cursor"])
+            response["results"] ++ KddNotionEx.Database.query_page(req, cms_db, query)
+        else
+          {:ok, Enum.map(response["results"], &KddNotionEx.Transform.page_as_record/1)}
+        end
+      {:ok, other} ->
+        Logger.error(inspect other)
+        {:error, []}
+      {:error, exception} ->
+        raise exception
+    end
+
+  end
+
   def cms_map() do
-    cms_db = Application.get_env(:kdd, :cms_db)
-    req = KddNotionEx.Client.new(Application.get_env(:kdd_notion_ex, :cms_key))
+
     # [:ok, :ok, :ok] = KddNotionEx.CMS.Config.validate_notion_db(req, cms_db)
 
     Cachex.fetch!(:kdd, :cms_map, fn _ ->
-      filter = %{
-        filter:
-          %{
-            "property" => "Published",
-            "checkbox" => %{
-              "equals" => true
-            }
-          },
-        sorts: [%{
-          "property" => "Page URL",
-          "direction" => "ascending"
-        }]
-      }
-      KddNotionEx.Database.query(req, cms_db, filter)
-      |> Enum.map(&KddNotionEx.Transform.page_as_record/1)
-      |> Enum.map(fn page ->
+      # return a empty list but don't crash on an HTTP error
+      {_, pages} = download_routes()
+      Enum.map(pages, fn page ->
         {page["Page URL"]["url"], page["ID"]["string"]}
       end)
     end
-
     )
-
   end
 
   def check_route(conn, _params) do
@@ -62,7 +84,6 @@ defmodule KddWeb.PageController do
   end
 
   def cms(conn, %{"cms_path" => path}) do
-    IO.inspect(path)
     id = cms_id("/#{Enum.join(path, "/")}")
 
     if is_nil(id), do: raise(Phoenix.Router.NoRouteError, conn: conn, router: KddWeb.Router)
