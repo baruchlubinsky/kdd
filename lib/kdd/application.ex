@@ -24,7 +24,13 @@ defmodule Kdd.Application do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Kdd.Supervisor]
-    Supervisor.start_link(children, opts)
+    return = Supervisor.start_link(children, opts)
+
+    cms_db = Application.fetch_env!(:kdd, :cms_db)
+    token = Application.fetch_env!(:kdd_notion_ex, :cms_key)
+    KddNotionEx.CMS.Config.validate_notion_db!(KddNotionEx.Client.new(token), cms_db)
+
+    return
   end
 
   # Tell Phoenix to update the endpoint configuration
