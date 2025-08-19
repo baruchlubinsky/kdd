@@ -16,6 +16,7 @@ defmodule KddWeb.WebhookController do
   def update_cms(conn, %{"data" => %{"properties" => params}}) do
     page_id = params["ID"]["formula"]["string"]
     Cachex.del(KddNotionEx.Cache.pages(), page_id)
+    Cachex.del(KddNotionEx.Cache.content(), page_id)
     case KddWeb.PageController.download_routes() do
       {:ok, pages} ->
         routes =
