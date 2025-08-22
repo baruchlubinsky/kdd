@@ -1,5 +1,6 @@
 defmodule KddWeb.CMSComponents do
   use Phoenix.Component
+#  import KddWeb.CoreComponents
 
   attr :element, :any, required: true
   def render_element(%{element: text} = assigns) when is_binary(text) do

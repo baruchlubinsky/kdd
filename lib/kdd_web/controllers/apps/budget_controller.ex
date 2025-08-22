@@ -17,8 +17,7 @@ defmodule KddWeb.Apps.BudgetController do
       Kdd.Repo.one(from(Kdd.Apps.Budget, where: [account_id: ^user.notion_account.id])) ||
         %Kdd.Apps.Budget{}
 
-    form = Kdd.Apps.Budget.changeset(record, %{})
-    render(conn, :settings, form: form)
+    render(conn, :settings, form: Ecto.Changeset.change(record))
   end
 
   def configure(conn, params) do
@@ -28,12 +27,23 @@ defmodule KddWeb.Apps.BudgetController do
       Kdd.Repo.one(from(Kdd.Apps.Budget, where: [account_id: ^user.notion_account.id])) ||
         %Kdd.Apps.Budget{account_id: user.notion_account.id}
 
-    record
-    |> Kdd.Apps.Budget.changeset(params["budget"])
-    |> Kdd.Repo.insert_or_update!()
+    req = KddNotionEx.Client.new(user.notion_account.access_token)
 
-    put_flash(conn, :info, "Saved.")
-    |> redirect(to: ~p{/apps/budget})
+    record
+    |> Kdd.Apps.Budget.changeset(params["budget"], req)
+    |> Kdd.Repo.insert_or_update()
+    |> IO.inspect()
+    |> case do
+      {:ok, _} ->
+        put_flash(conn, :info, "Saved.")
+        |> redirect(to: ~p{/apps/budget})
+      {:error, other} ->
+        render(conn, :settings, form: other)
+    end
+
+
+
+
   end
 
   def expense(conn, _params) do
@@ -44,11 +54,18 @@ defmodule KddWeb.Apps.BudgetController do
       put_flash(conn, :warn, "App is not configured.")
       |> redirect(to: ~p"/apps/budget/settings")
     else
-      render(conn, :expense)
+      form = Ecto.Changeset.change(%Kdd.Apps.ExpenseDB{:"Category" => nil, :"Date" => NaiveDateTime.utc_now()})
+
+      category_options =
+        KddNotionEx.Client.new(user.notion_account.access_token)
+        |> KddNotionEx.Database.query(app.budget_db, nil)
+        |> KddNotionEx.Transform.table_to_options("Category")
+
+      render(conn, :expense, form: form, categories: category_options)
     end
   end
 
-  def record_expense(conn, %{"name" => name, "amount" => amount, "category" => category}) do
+  def record_expense(conn, %{"expense_db" => %{"Name" => name, "Amount" => amount, "Category" => category}}) do
     user = conn.assigns[:user]
     app = Kdd.Repo.one(from(Kdd.Apps.Budget, where: [account_id: ^user.notion_account.id]))
     req = KddNotionEx.Client.new(user.notion_account.access_token)

@@ -9,4 +9,16 @@
     <a href={~p"/apps/budget/settings"} class="text-lg text-gray-600 hover:underline">Settings</a>
   </div>
 </div>
-<%= live_render(@conn, KddWeb.LiveExpense, session: %{"user_id" => @conn.assigns[:user].id}) %>
+<.form :let={f} for={@form} action={~p"/apps/budget/expense"}>
+  <.input type="text" label="Title" field={f[:"Name"]} />
+  <.input
+    type="select"
+    label="Category"
+    field={f[:"Category"]}
+    options={@categories}
+  />
+  <.input type="number" label="Amount" field={f[:"Amount"]} />
+  <p>
+    <.button>Save</.button>
+  </p>
+</.form>
