@@ -1,0 +1,5 @@
+<.heading>Gallery</.heading>
+<.simple_form :let={f} for={@form} action={~p"/apps/gallery/configure"}>
+  <.input field={f[:gallery_db]} label="Gallery Database page ID" input_class="notionLink" />
+  <.button>Save</.button>
+</.simple_form>

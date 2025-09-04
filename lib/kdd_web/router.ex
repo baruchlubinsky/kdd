@@ -31,14 +31,6 @@ defmodule KddWeb.Router do
     plug :accepts, ["json", "html"]
   end
 
-  scope "/", KddWeb do
-    pipe_through :browser
-
-    get "/apps", PageController, :apps
-    get "/yoga", PageController, :yoga
-
-  end
-
   scope "/incoming/notion", KddWeb do
     pipe_through :webhook
 
@@ -62,6 +54,15 @@ defmodule KddWeb.Router do
     get "/expense", BudgetController, :expense
     post "/expense", BudgetController, :record_expense
     get "/report", BudgetController, :report
+  end
+
+  scope "/apps/gallery", KddWeb.Apps do
+    pipe_through :browser
+
+    get "/", GalleryController, :index
+    get "/settings", GalleryController, :settings
+    post "/configure", GalleryController, :configure
+
   end
 
   scope "/apps/events", KddWeb.Apps do

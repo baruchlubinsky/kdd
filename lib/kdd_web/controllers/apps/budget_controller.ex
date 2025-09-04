@@ -32,7 +32,6 @@ defmodule KddWeb.Apps.BudgetController do
     record
     |> Kdd.Apps.Budget.changeset(params["budget"], req)
     |> Kdd.Repo.insert_or_update()
-    |> IO.inspect()
     |> case do
       {:ok, _} ->
         put_flash(conn, :info, "Saved.")
@@ -40,10 +39,6 @@ defmodule KddWeb.Apps.BudgetController do
       {:error, other} ->
         render(conn, :settings, form: other)
     end
-
-
-
-
   end
 
   def expense(conn, _params) do
