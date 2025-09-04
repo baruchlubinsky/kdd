@@ -3,8 +3,6 @@ defmodule KddWeb.Apps.GalleryController do
   import Phoenix.LiveView.Controller
   import Ecto.Query
 
-  alias KddNotionEx.Templates
-
   plug :load_user!
 
   def settings(conn, _params) do
